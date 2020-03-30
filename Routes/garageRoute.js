@@ -7,6 +7,8 @@ const Router = express.Router({
 const newController = require('../controllers/gerageController');
 //const authController = require('../../controllers/aythController');
 
+Router.route('/l').get(newController.SearchGarage); //http://127.0.0.1:3000/garage/l?search=a
+
 /*    authController.protect,
     authController.restrictTo('admin'),*/
 Router.route('/')

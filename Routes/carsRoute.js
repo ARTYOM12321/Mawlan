@@ -5,7 +5,9 @@ const Router = express.Router({
 });
 
 const newController = require('../controllers/carsController');
-const authController = require('../controllers/aythController');
+//const authController = require('../controllers/aythController');
+
+Router.route('/l').get(newController.SearchMovies); //http://127.0.0.1:3000/cars/l?search=a
 
 /*    authController.protect,
     authController.restrictTo('admin'),*/
