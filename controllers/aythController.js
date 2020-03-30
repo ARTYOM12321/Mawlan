@@ -7,19 +7,19 @@ const AppError = require('./../utils/error');
 const Email = require('./../utils/email');
 
 const signtoken = id => {
-  return jwt.sign({ id: id }, global.env.JWT_SECRET, {
-    expiresIn: global.env.JWT_EXPIRES_IN
+  return jwt.sign({ id: id }, process.env.JWT_SECRET, {
+    expiresIn: process.env.JWT_EXPIRES_IN
   });
 };
 const createSendToken = (user, statusCode, res) => {
   const token = signtoken(user._id);
   const cookieOption = {
     expires: new Date(
-      Date.now() + global.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
+      Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
     ),
     httpOnly: true
   };
-  if (global.env.NODE_ENV === 'produuction') {
+  if (process.env.NODE_ENV === 'produuction') {
     cookieOption.secure = true;
   }
   res.cookie('jwt', token, cookieOption);
@@ -80,7 +80,7 @@ exports.protect = catchAsync(async (req, res, next) => {
     return next(new AppError('ئەم لینكە بەردەست نیە', 401));
   }
   //2) verfication the signtoken
-  const decoded = await promisify(jwt.verify)(token, global.env.JWT_SECRET);
+  const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
   //3) check if user still exist
   const freshUser = await User.findById(decoded.id);
   if (!freshUser) {
@@ -108,7 +108,7 @@ exports.isLoggedIn = async (req, res, next) => {
       //verify the token
       const decoded = await promisify(jwt.verify)(
         req.cookies.jwt,
-        global.env.JWT_SECRET
+        process.env.JWT_SECRET
       );
       //2) check if user still exist
       const freshUser = await User.findById(decoded.id);
