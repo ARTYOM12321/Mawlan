@@ -18,7 +18,7 @@ const app = express();
 app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views'));
 //
-
+const userRouter = require('./Routes/userRoutes');
 const carsRouter = require('./Routes/carsRoute');
 const garageRouter = require('./Routes/garageRoute');
 
@@ -52,7 +52,7 @@ app.use('/api', limiter);
 //
 //
 //
-
+app.use('/users', userRouter);
 app.use('/api/cars', carsRouter);
 app.use('/api/garage', garageRouter);
 //events--------
