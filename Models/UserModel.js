@@ -17,7 +17,7 @@ const userSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    enum: ['user', 'admin'],
+    enum: ['admin', 'adgarage', 'moderator', 'user'],
     default: 'user'
   },
   photo: {
@@ -39,6 +39,9 @@ const userSchema = new mongoose.Schema({
       },
       message: 'PasswordConfirm is not same as Password'
     }
+  },
+  phone: {
+    type: String
   },
   passwordChangedAt: Date,
   PasswordResetToken: String,
