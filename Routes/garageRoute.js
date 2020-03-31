@@ -16,8 +16,8 @@ Router.route('/')
   .post(
     //   authController.protect,
     //   authController.restrictTo('admin'),
-    //   newController.uploadNewsImages,
-    //    newController.resizeNewsPhotos,
+    newController.uploadImages,
+    newController.resizePhotos,
     newController.CreateGarage
   );
 
