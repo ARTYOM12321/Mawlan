@@ -52,7 +52,7 @@ app.use('/api', limiter);
 //
 //
 //
-app.use('/users', userRouter);
+app.use('/api/users', userRouter);
 app.use('/api/cars', carsRouter);
 app.use('/api/garage', garageRouter);
 //events--------
