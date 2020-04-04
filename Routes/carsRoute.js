@@ -5,34 +5,37 @@ const Router = express.Router({
 });
 
 const newController = require('../controllers/carsController');
-//const authController = require('../controllers/aythController');
+const authController = require('../controllers/aythController');
 
 Router.route('/l').get(newController.SearchMovies); //http://127.0.0.1:3000/cars/l?search=a
 
 /*    authController.protect,
-    authController.restrictTo('admin'),*/
+    authController.restrictTo('admin'), */
 Router.route('/')
-  .get(newController.getAllCars)
+  .get(authController.isLoggedIn, newController.getAllCars) //getAllCars
   .post(
     //   authController.protect,
     //   authController.restrictTo('admin'),
+    authController.isLoggedIn,
     newController.uploadImages,
     newController.resizePhotos,
     newController.CreateCar
   );
 
 Router.route('/:id')
-  .get(newController.getCar)
+  .get(authController.isLoggedIn, newController.getCar)
   .patch(
     // authController.protect,
     // authController.restrictTo('admin'),
-    // newController.uploadNewsImages,
-    // newController.resizeNewsPhotos,
+    authController.isLoggedIn,
+    newController.uploadImages,
+    newController.resizePhotos,
     newController.UpdateCar
   )
   .delete(
     // authController.protect,
     // authController.restrictTo('admin'),
+    authController.isLoggedIn,
     newController.DeleteCar
   );
 
