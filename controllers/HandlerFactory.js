@@ -71,11 +71,18 @@ exports.getAll = Model =>
     // const doc = await features.query.explain();
     const doc = await features.query; //find() gonna bring all data in database
     //200 === OK , we are sending a Json as Jsend
+
+    let userHolder = '';
+    if (!res.locals.user) {
+      res.locals.user = 'No user';
+    }
+
+    userHolder = { ...res.locals.user._doc };
     res.status(200).json({
       status: 'success',
       result: doc.length,
-
-      data: doc
+      data: doc,
+      user: userHolder
     });
   });
 

@@ -5,6 +5,7 @@ const User = require('../Models/UserModel');
 const catchAsync = require('../utils/CatchAsync');
 const AppError = require('./../utils/error');
 const Email = require('./../utils/email');
+const app = require('../app');
 
 const signtoken = id => {
   return jwt.sign({ id: id }, process.env.JWT_SECRET, {
@@ -65,9 +66,7 @@ exports.logout = (req, res) => {
 };
 
 exports.protect = catchAsync(async (req, res, next) => {
-  //1) getting token and check it's
   let token;
-  //spliting token and save it to token
   if (
     req.headers.authorization &&
     req.headers.authorization.startsWith('Bearer')

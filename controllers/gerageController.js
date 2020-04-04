@@ -1,3 +1,4 @@
+const fs = require('fs');
 const multer = require('multer');
 const sharp = require('sharp');
 const AppError = require('./../utils/error');
@@ -13,7 +14,6 @@ function escapeRegex(text) {
 //----------------------------------------------------------------
 //----------------------------------------------------------------
 const multerStorage = multer.memoryStorage();
-
 const multerFilter = (req, file, cb) => {
   if (file.mimetype.startsWith('image')) {
     cb(null, true);
@@ -35,13 +35,12 @@ const upload = multer({
 exports.uploadImages = upload.array('listOfImages', 10);
 exports.resizePhotos = catchAsync(async (req, res, next) => {
   if (!req.files) return next();
-
   req.body.listOfImages = [];
+
   await Promise.all(
     req.files.map(async (file, i) => {
       const filename = `Cars-${Date.now()}-${i + 1}.jpeg`;
-
-      await sharp(file.buffer)
+      await sharp(file)
         .toFormat('jpeg')
         .jpeg()
         .toFile(`public/img/Garage/${filename}`);
