@@ -1,4 +1,5 @@
 //.............TOP LEVEL CODE................
+const bodyParser = require('body-parser');
 const path = require('path');
 const express = require('express');
 const rateLimit = require('express-rate-limit');
@@ -14,6 +15,12 @@ const AppError = require('./utils/error');
 
 //Start Express App
 const app = express();
+app.use(
+  bodyParser.urlencoded({
+    extended: true
+  })
+);
+
 //
 app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views'));
