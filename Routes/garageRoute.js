@@ -6,6 +6,7 @@ const Router = express.Router({
 
 const newController = require('../controllers/gerageController');
 const authController = require('../controllers/aythController');
+const imageHandler = require('../controllers/imageHandler');
 
 Router.route('/l').get(newController.SearchGarage); //http://127.0.0.1:3000/garage/l?search=a
 
@@ -17,8 +18,8 @@ Router.route('/')
     //   authController.protect,
     //   authController.restrictTo('admin'),
     authController.isLoggedIn,
-    newController.uploadImages,
-    newController.resizePhotos,
+    imageHandler.uploadImages,
+    imageHandler.resizePhotos('Garage'),
     newController.CreateGarage
   );
 
@@ -28,8 +29,8 @@ Router.route('/:id')
     // authController.protect,
     // authController.restrictTo('admin'),
     authController.isLoggedIn,
-    newController.uploadImages,
-    newController.resizePhotos,
+    imageHandler.uploadImages,
+    imageHandler.resizePhotos('Garage'),
     newController.UpdateGarage
   )
   .delete(

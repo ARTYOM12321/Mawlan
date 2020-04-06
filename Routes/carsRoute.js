@@ -5,6 +5,8 @@ const Router = express.Router({
 });
 
 const newController = require('../controllers/carsController');
+const imageHandler = require('../controllers/imageHandler');
+
 const authController = require('../controllers/aythController');
 
 Router.route('/l').get(newController.SearchMovies); //http://127.0.0.1:3000/cars/l?search=a
@@ -16,9 +18,10 @@ Router.route('/')
   .post(
     //   authController.protect,
     //   authController.restrictTo('admin'),
+
     authController.isLoggedIn,
-    newController.uploadImages,
-    newController.resizePhotos,
+    imageHandler.uploadImages,
+    imageHandler.resizePhotos('Cars'),
     newController.CreateCar
   );
 
@@ -28,8 +31,8 @@ Router.route('/:id')
     // authController.protect,
     // authController.restrictTo('admin'),
     authController.isLoggedIn,
-    newController.uploadImages,
-    newController.resizePhotos,
+    imageHandler.uploadImages,
+    imageHandler.resizePhotos('Cars'),
     newController.UpdateCar
   )
   .delete(
