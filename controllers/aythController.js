@@ -5,7 +5,6 @@ const User = require('../Models/UserModel');
 const catchAsync = require('../utils/CatchAsync');
 const AppError = require('./../utils/error');
 const Email = require('./../utils/email');
-const app = require('../app');
 
 const signtoken = id => {
   return jwt.sign({ id: id }, process.env.JWT_SECRET, {
@@ -120,6 +119,7 @@ exports.isLoggedIn = async (req, res, next) => {
       }
       //there is a Logged in User
       res.locals.user = freshUser;
+      req.UserDetails = freshUser;
     }
   } catch (err) {
     return next();

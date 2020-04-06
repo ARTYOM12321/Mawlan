@@ -8,14 +8,23 @@ exports.deleteOne = Model =>
     if (!doc) {
       return next(new AppError('ببورە هیچ پەڕەیەك نەدۆزرایەوە', 404));
     }
+    let userHolder = '';
+    if (!res.locals.user) {
+      res.locals.user = 'No user';
+    }
+    userHolder = { ...res.locals.user._doc };
+
     res.status(200).json({
       status: 'success',
-      message: 'this data deleted'
+      message: 'this data deleted',
+      user: userHolder
     });
   });
 
 exports.UpdateOne = Model =>
   catchAsync(async (req, res, next) => {
+    if (req.body.PostOwner) req.body.PostOwner = null;
+
     const doc = await Model.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
       runValidators: true
@@ -23,18 +32,36 @@ exports.UpdateOne = Model =>
     if (!doc) {
       return next(new AppError('ببورە هیچ پەرەیەك نەدۆزرایەوە', 404));
     }
+
+    let userHolder = '';
+    if (!res.locals.user) {
+      res.locals.user = 'No user';
+    }
+    userHolder = { ...res.locals.user._doc };
+
     res.status(200).json({
       status: 'success',
-      data: doc
+      data: doc,
+      user: userHolder
     });
   });
 
 exports.CreateOne = Model =>
   catchAsync(async (req, res, next) => {
+    if (!req.body.PostOwner) req.body.PostOwner = req.UserDetails._id;
+
     const doc = await Model.create(req.body);
+
+    let userHolder = '';
+    if (!res.locals.user) {
+      res.locals.user = 'No user';
+    }
+    userHolder = { ...res.locals.user._doc };
+
     res.status(201).json({
       status: 'success',
-      data: doc
+      data: doc,
+      user: userHolder
     });
   });
 
@@ -50,10 +77,18 @@ exports.getOne = (Model, populateOptions) =>
     if (!doc) {
       return next(new AppError('ببورە هیچ پەڕەیەك نەدۆزرایەوە', 404));
     }
+
+    let userHolder = '';
+    if (!res.locals.user) {
+      res.locals.user = 'No user';
+    }
+    userHolder = { ...res.locals.user._doc };
+
     res.status(200).json({
       status: 'success',
 
-      data: doc
+      data: doc,
+      user: userHolder
     });
   });
 
@@ -86,8 +121,28 @@ exports.getAll = Model =>
     });
   });
 
-exports.SetSinglePhoto = (req, res, next) => {
-  if (req.file) req.body.Photo = req.file.filename;
+exports.PartialSearch = Model =>
+  catchAsync(async (req, res, next) => {
+    let limit = 6;
+    if (req.query.rlimit) limit = req.query.rlimit * 1;
+    let Posts;
+    req.query.search.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
+    if (req.query.search) {
+      const regex = new RegExp(req.query.search, 'gi');
+      Posts = await Model.find(
+        {
+          name: regex
+        },
+        { name: 1, slug: 1 }
+      ).limit(limit);
+    } else {
+      const features = new APIFeatures(Model.find(), req.query).filter();
+      Posts = await features.query;
+    }
 
-  next();
-};
+    res.status(200).json({
+      status: 'success',
+      result: Posts.length,
+      data: Posts
+    });
+  });
