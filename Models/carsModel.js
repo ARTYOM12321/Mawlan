@@ -55,8 +55,13 @@ const carsSchema = new mongoose.Schema(
       ref: 'User',
       required: [true, 'review must belong to a user']
     },
-    garage: {
-      type: mongoose.Schema.ObjectId
+    garageId: {
+      type: mongoose.Schema.ObjectId,
+      ref: 'garage'
+    },
+    individual: {
+      type: Boolean,
+      default: true
     }
   },
   {
@@ -69,7 +74,15 @@ carsSchema.index({ name: 1 });
 carsSchema.pre(/^find/, function(next) {
   this.populate({
     path: 'PostOwner',
-    select: '-__v'
+    select:
+      '-__v -passwordChangedAt -PasswordResetToken -PasswordResetExpires -active -isGarage'
+  });
+  next();
+});
+carsSchema.pre(/^find/, function(next) {
+  this.populate({
+    path: 'garageId',
+    select: '-__v -GeragePassword -ownerUserId -locations'
   });
   next();
 });

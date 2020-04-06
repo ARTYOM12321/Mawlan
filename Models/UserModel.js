@@ -43,6 +43,10 @@ const userSchema = new mongoose.Schema({
   phone: {
     type: String
   },
+  isGarage: {
+    type: Boolean,
+    default: false
+  },
   passwordChangedAt: Date,
   PasswordResetToken: String,
   PasswordResetExpires: Date,
