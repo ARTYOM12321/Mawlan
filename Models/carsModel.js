@@ -47,8 +47,10 @@ const carsSchema = new mongoose.Schema(
       latitude: String,
       longitude: String
     },
-    owner: {
-      type: mongoose.Schema.ObjectId
+    PostOwner: {
+      type: mongoose.Schema.ObjectId,
+      ref: 'User',
+      required: [true, 'review must belong to a user']
     },
     garage: {
       type: mongoose.Schema.ObjectId
@@ -60,6 +62,14 @@ const carsSchema = new mongoose.Schema(
   }
 );
 carsSchema.index({ name: 1 });
+
+carsSchema.pre(/^find/, function(next) {
+  this.populate({
+    path: 'PostOwner',
+    select: '-__v'
+  });
+  next();
+});
 
 carsSchema.pre('save', async function(next) {
   this.createdAt = Date.now();
