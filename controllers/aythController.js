@@ -41,13 +41,13 @@ exports.signup = catchAsync(async (req, res, next) => {
 });
 
 exports.login = catchAsync(async (req, res, next) => {
-  let a = req.body.mawlan;
-  let b = req.body.alipassword;
-  const email = a; //req.body.Email;
-  const password = b; // req.body.Password;
+  const email = req.body.Email;
+  const password = req.body.Password;
   //1) if email and pass exist
   if (!email || !password) {
-    return next(new AppError('تكایە هەردوو خانە پڕبكەوە', 400));
+    return next(
+      new AppError('please fill both Emailand Password Fields :D', 400)
+    );
   }
   //2) check if user exist && password is correct (search within the database)
   const user = await User.findOne({ Email: email }).select('+Password');

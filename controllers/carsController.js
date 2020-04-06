@@ -9,14 +9,12 @@ const AppError = require('../utils/error');
 //----------------------------------------------------------------
 exports.test = catchAsync(async (req, res, next) => {
   await axios
-    .get('http://127.0.0.1:3000/api/garage', {
-      headers: {
-        authorization:
-          'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVlODYyNWJlNjFjMTY0MGQwMGEyYTRiZSIsImlhdCI6MTU4NTg0OTc5MSwiZXhwIjoxNTkzNjI1NzkxfQ.X9QKy35XXsahupOSPc3IDNa9tzkfq76axoLAi49oSao'
-      }
+    .post('http://carappdev.herokuapp.com/api/users/login', {
+      mawlan: 'user3442@microsoft.com',
+      alipassword: 'test12345'
     })
     .then(response => {
-      //console.log(response.data.user);
+      console.log(response);
     })
     .catch(err => {
       console.log(err);
