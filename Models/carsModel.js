@@ -10,6 +10,9 @@ const carsSchema = new mongoose.Schema(
       type: Number,
       required: [true, 'There must be a Price']
     },
+    carDescription: {
+      type: String
+    },
     theModel: {
       type: Number,
       required: [true, 'There must be a Model Number']
@@ -38,7 +41,7 @@ const carsSchema = new mongoose.Schema(
       type: String
     },
     nameOfParts: {
-      type: Array
+      type: String
     },
     listOfImages: {
       type: Array
