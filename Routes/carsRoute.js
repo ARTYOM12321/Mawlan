@@ -20,6 +20,7 @@ Router.route('/')
     //   authController.restrictTo('admin'),
 
     authController.isLoggedIn,
+    newController.Check,
     imageHandler.uploadImages,
     imageHandler.resizePhotos('Cars'),
     newController.CreateCar
