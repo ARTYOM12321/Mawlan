@@ -41,8 +41,10 @@ exports.signup = catchAsync(async (req, res, next) => {
 });
 
 exports.login = catchAsync(async (req, res, next) => {
-  const email = req.body.Email;
-  const password = req.body.Password;
+  let a = req.body.mawlan;
+  let b = req.body.alipassword;
+  const email = a; //req.body.Email;
+  const password = b; // req.body.Password;
   //1) if email and pass exist
   if (!email || !password) {
     return next(new AppError('تكایە هەردوو خانە پڕبكەوە', 400));
