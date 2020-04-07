@@ -104,10 +104,20 @@ exports.protect = catchAsync(async (req, res, next) => {
 //Only for rendered pages , No Errors~
 exports.isLoggedIn = async (req, res, next) => {
   try {
-    if (req.cookies.jwt) {
+    let token;
+    if (
+      req.headers.authorization &&
+      req.headers.authorization.startsWith('Bearer')
+    ) {
+      token = req.headers.authorization.split(' ')[1];
+    } else if (req.cookies.jwt) {
+      token = req.cookies.jwt;
+    }
+
+    if (token) {
       //verify the token
       const decoded = await promisify(jwt.verify)(
-        req.cookies.jwt,
+        token,
         process.env.JWT_SECRET
       );
       //2) check if user still exist
