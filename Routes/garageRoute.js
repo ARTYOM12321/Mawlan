@@ -20,6 +20,7 @@ Router.route('/')
     authController.isLoggedIn,
     imageHandler.uploadImages,
     imageHandler.resizePhotos('Garage'),
+    newController.setUserEmail,
     newController.CreateGarage
   );
 

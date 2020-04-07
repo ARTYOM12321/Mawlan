@@ -14,7 +14,11 @@ Router.route('/l').get(newController.SearchMovies); //http://127.0.0.1:3000/cars
 /*    authController.protect,
     authController.restrictTo('admin'), */
 Router.route('/')
-  .get(authController.isLoggedIn, newController.getAllCars) //getAllCars
+  .get(
+    authController.protect,
+    //authController.isLoggedIn,
+    newController.getAllCars
+  ) //getAllCars
   .post(
     //   authController.protect,
     //   authController.restrictTo('admin'),
