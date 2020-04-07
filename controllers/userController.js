@@ -72,7 +72,8 @@ exports.updateMe = catchAsync(async (req, res, next) => {
     'Email',
     'likes',
     'bio',
-    'active'
+    'active',
+    'isGarage'
   );
 
   if (req.file) FilteredBody.photo = req.file.filename;
