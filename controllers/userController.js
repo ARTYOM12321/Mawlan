@@ -4,6 +4,7 @@ const AppError = require('./../utils/error');
 const catchAsync = require('../utils/CatchAsync');
 const User = require('../Models/UserModel');
 const factory = require('./HandlerFactory');
+const cars = require('.//..//Models//carsModel');
 
 const multerStorage = multer.memoryStorage();
 const multerFilter = (req, file, cb) => {
@@ -90,11 +91,12 @@ exports.updateMe = catchAsync(async (req, res, next) => {
 });
 
 exports.deleteMe = catchAsync(async (req, res, next) => {
+  await cars.deleteMany({ PostOwner: req.user.id });
   await User.findByIdAndUpdate(req.user.id, { active: false });
 
-  res.status(204).json({
+  res.status(200).json({
     status: 'success',
-    data: null
+    data: 'User Successfully deleted!'
   });
 });
 
