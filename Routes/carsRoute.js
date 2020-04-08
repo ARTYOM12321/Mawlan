@@ -36,6 +36,7 @@ Router.route('/:id')
     // authController.protect,
     // authController.restrictTo('admin'),
     authController.isLoggedIn,
+    newController.CarsPermission,
     imageHandler.uploadImages,
     imageHandler.resizePhotos('Cars'),
     newController.UpdateCar
@@ -44,6 +45,7 @@ Router.route('/:id')
     // authController.protect,
     // authController.restrictTo('admin'),
     authController.isLoggedIn,
+    newController.CarsPermission,
     newController.DeleteCar
   );
 
