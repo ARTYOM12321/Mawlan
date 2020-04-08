@@ -31,7 +31,7 @@ exports.CreateCar = factory.CreateOne(cars);
 exports.UpdateCar = factory.UpdateOne(cars);
 exports.DeleteCar = factory.deleteOne(cars);
 exports.SearchMovies = factory.PartialSearch(cars);
-
+exports.CarsPermission = factory.UserPermission(cars);
 exports.Check = async (req, res, next) => {
   if (req.UserDetails.isGarage && !req.body.individual) {
     const garagefound = await garage.find({ ownerUserId: req.UserDetails._id });

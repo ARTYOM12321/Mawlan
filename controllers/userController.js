@@ -70,8 +70,7 @@ exports.updateMe = catchAsync(async (req, res, next) => {
     req.body,
     'name',
     'Email',
-    'likes',
-    'bio',
+    'phone',
     'active',
     'isGarage'
   );
