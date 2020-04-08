@@ -32,9 +32,21 @@ exports.UpdateCar = factory.UpdateOne(cars);
 exports.DeleteCar = factory.deleteOne(cars);
 exports.SearchMovies = factory.PartialSearch(cars);
 exports.CarsPermission = factory.UserPermission(cars);
+
 exports.Check = async (req, res, next) => {
   if (req.UserDetails.isGarage && !req.body.individual) {
-    const garagefound = await garage.find({ ownerUserId: req.UserDetails._id });
+    let garagefound;
+    garagefound = await garage.find({
+      worker: req.UserDetails._id
+    });
+    if (garagefound.length === 0) {
+      garagefound = await garage.find({
+        ownerUserId: req.UserDetails._id
+      });
+    }
+
+    if (garagefound.length === 0)
+      return next(new AppError('No Gerage found for this user!', 403));
 
     const result = await bcrypt.compare(
       req.body.garagePassword,
