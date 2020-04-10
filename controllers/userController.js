@@ -5,6 +5,7 @@ const catchAsync = require('../utils/CatchAsync');
 const User = require('../Models/UserModel');
 const factory = require('./HandlerFactory');
 const cars = require('.//..//Models//carsModel');
+const garage = require('.//..//Models//garageModel');
 
 const multerStorage = multer.memoryStorage();
 const multerFilter = (req, file, cb) => {
@@ -92,6 +93,40 @@ exports.updateMe = catchAsync(async (req, res, next) => {
 
 exports.deleteMe = catchAsync(async (req, res, next) => {
   await cars.deleteMany({ PostOwner: req.user.id });
+
+  let garagefound;
+  garagefound = await garage.find({
+    worker: req.user._id
+  });
+
+  if (garagefound.length === 0) {
+    garagefound = await garage.find({
+      ownerUserId: req.user._id
+    });
+    if (garagefound.length !== 0) {
+      await garage.findByIdAndUpdate(garagefound[0]._id, {
+        published: false,
+        worker: []
+      });
+    }
+  } else {
+    const EmailArray = [];
+    garagefound[0].worker.forEach(el => {
+      EmailArray.push(el._id);
+    });
+    const indextodelete = EmailArray.indexOf(req.user._id);
+    EmailArray.splice(indextodelete, 1);
+    await garage.findByIdAndUpdate(garagefound[0]._id, {
+      worker: EmailArray
+    });
+  }
+
+  await cars.updateMany(
+    { garageId: garagefound[0]._id },
+    {
+      available: false
+    }
+  );
   await User.findByIdAndUpdate(req.user.id, { active: false });
 
   res.status(200).json({

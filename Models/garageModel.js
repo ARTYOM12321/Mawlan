@@ -22,6 +22,16 @@ const garageSchema = new mongoose.Schema(
       ref: 'User',
       unique: true
     },
+    worker: [
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: 'User'
+      }
+    ],
+    published: {
+      type: Boolean,
+      default: false
+    },
     GeragePassword: {
       type: String,
       maxlength: 6
@@ -34,7 +44,7 @@ const garageSchema = new mongoose.Schema(
 );
 garageSchema.index({ name: 1 });
 garageSchema.pre('save', async function(next) {
-  this.GeragePassword = await bcrypt.hash(this.GeragePassword, 6);
+  this.GeragePassword = await bcrypt.hash(this.GeragePassword, 12);
   next();
 });
 
@@ -51,6 +61,14 @@ garageSchema.pre(/^find/, function(next) {
   });
   next();
 });
+garageSchema.pre(/^find/, function(next) {
+  this.populate({
+    path: 'worker',
+    select:
+      '-__v -passwordChangedAt -PasswordResetToken -PasswordResetExpires -active -isGarage'
+  });
+  next();
+});
 
 garageSchema.methods.garagechecker = async function(
   candidatePassword,
@@ -58,6 +76,13 @@ garageSchema.methods.garagechecker = async function(
 ) {
   return await bcrypt.compare(candidatePassword, userPassword);
 };
+/*
+garageSchema.pre('save', async function(next) {
+  if (!this.isModified('GeragePassword')) return next();
 
+  this.GeragePassword = await bcrypt.hash(this.GeragePassword, 12);
+  next();
+}); 
+*/
 const garage = mongoose.model('garage', garageSchema);
 module.exports = garage;

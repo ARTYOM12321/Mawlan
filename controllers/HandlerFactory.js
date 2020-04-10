@@ -1,6 +1,7 @@
 const catchAsync = require('../utils/CatchAsync');
 const AppError = require('../utils/error');
 const APIFeatures = require('./../utils/apiFeatures');
+const garage = require('.//..//Models//garageModel');
 
 exports.deleteOne = Model =>
   catchAsync(async (req, res, next) => {
@@ -33,6 +34,20 @@ exports.UpdateOne = Model =>
       return next(new AppError('ببورە هیچ پەرەیەك نەدۆزرایەوە', 404));
     }
 
+    //CHANGING PASSWORDS
+    if (req.body.GeragePasswordNew) {
+      const user = await garage
+        .findById(req.params.id)
+        .select('+GeragePassword');
+      if (!user) {
+        return next(new AppError('There is no Gerage with that id ', 404));
+      }
+      user.GeragePassword = req.body.GeragePasswordNew;
+
+      await user.save();
+    }
+
+    //////////////////////
     let userHolder = '';
     if (!res.locals.user) {
       res.locals.user = 'No user';

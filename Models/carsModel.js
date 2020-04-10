@@ -62,6 +62,10 @@ const carsSchema = new mongoose.Schema(
     individual: {
       type: Boolean,
       default: true
+    },
+    available: {
+      type: Boolean,
+      default: true
     }
   },
   {

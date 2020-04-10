@@ -34,7 +34,9 @@ exports.SearchMovies = factory.PartialSearch(cars);
 exports.CarsPermission = factory.UserPermission(cars);
 
 exports.Check = async (req, res, next) => {
-  if (req.UserDetails.isGarage && !req.body.individual) {
+  //check the properties
+  if (req.UserDetails.isGarage == true && req.body.individual == false) {
+    //looking for the garage in two queries
     let garagefound;
     garagefound = await garage.find({
       worker: req.UserDetails._id
@@ -44,10 +46,10 @@ exports.Check = async (req, res, next) => {
         ownerUserId: req.UserDetails._id
       });
     }
-
     if (garagefound.length === 0)
       return next(new AppError('No Gerage found for this user!', 403));
 
+    //Now we have the result , lets check for the garage password
     const result = await bcrypt.compare(
       req.body.garagePassword,
       garagefound[0].GeragePassword
@@ -55,6 +57,7 @@ exports.Check = async (req, res, next) => {
     if (!result) {
       return next(new AppError('Garage Password is wrong!', 403));
     }
+    //if everything is alright , then add this property to the Body
     req.body.garageId = garagefound[0].id;
   }
 
