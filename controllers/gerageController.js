@@ -75,6 +75,7 @@ exports.UpdateCheker = catchAsync(async (req, res, next) => {
               }
             }
           )
+          .then(Response => {})
           .catch(err => {});
       }
     } else {

@@ -92,7 +92,7 @@ exports.updateMe = catchAsync(async (req, res, next) => {
 });
 
 exports.deleteMe = catchAsync(async (req, res, next) => {
-  await cars.deleteMany({ PostOwner: req.user.id });
+  await cars.deleteMany({ PostOwner: req.user.id, individual: true });
 
   let garagefound;
   garagefound = await garage.find({
