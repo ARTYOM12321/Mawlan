@@ -121,12 +121,6 @@ exports.deleteMe = catchAsync(async (req, res, next) => {
     });
   }
 
-  await cars.updateMany(
-    { garageId: garagefound[0]._id },
-    {
-      available: false
-    }
-  );
   await User.findByIdAndUpdate(req.user.id, { active: false });
 
   res.status(200).json({

@@ -46,7 +46,7 @@ exports.UpdateCheker = catchAsync(async (req, res, next) => {
     return next(new AppError('Garage Not Found!', 403));
   const users = garagefound[0].worker;
 
-  if (users.length === 0)
+  if (users.length === 0 && !req.body.workerEmail)
     return next(new AppError('Couldnt fetch Users!', 403));
 
   const EmailArray = [];
@@ -65,7 +65,7 @@ exports.UpdateCheker = catchAsync(async (req, res, next) => {
       for (const file of EmailArray) {
         await axios
           .patch(
-            `http://127.0.0.1:3000/api/users/${file}`,
+            `https://carappdev.herokuapp.com/api/users/${file}`,
             {
               isGarage: req.body.published
             },
