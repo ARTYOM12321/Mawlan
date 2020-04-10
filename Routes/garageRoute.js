@@ -32,6 +32,8 @@ Router.route('/:id')
     authController.isLoggedIn,
     imageHandler.uploadImages,
     imageHandler.resizePhotos('Garage'),
+    newController.UpdateCheker,
+    newController.UpdateWorker,
     newController.UpdateGarage
   )
   .delete(
@@ -39,6 +41,7 @@ Router.route('/:id')
 
     // authController.protect,
     // authController.restrictTo('admin'),
+    newController.deleteChecker,
     newController.DeleteGarage
   );
 
