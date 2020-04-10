@@ -95,6 +95,9 @@ carsSchema.pre('save', async function(next) {
   this.createdAt = Date.now();
   next();
 });
-
+carsSchema.pre(/^find/, function(next) {
+  this.find({ available: { $ne: false } });
+  next();
+});
 const cars = mongoose.model('cars', carsSchema);
 module.exports = cars;

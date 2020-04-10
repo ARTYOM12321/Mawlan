@@ -46,8 +46,8 @@ exports.UpdateCheker = catchAsync(async (req, res, next) => {
     return next(new AppError('Garage Not Found!', 403));
   const users = garagefound[0].worker;
 
-  if (users.length === 0 && !req.body.workerEmail)
-    return next(new AppError('Couldnt fetch Users!', 403));
+  /* if (users.length === 0 && !req.body.workerEmail)
+    return next(new AppError('Couldnt fetch Users!', 403)); */
 
   const EmailArray = [];
   users.forEach(el => {
@@ -71,7 +71,9 @@ exports.UpdateCheker = catchAsync(async (req, res, next) => {
             },
             {
               headers: {
-                authorization: `Bearer ${req.cookies.jwt}` // change it to Headers later
+                authorization: `Bearer ${
+                  req.headers.authorization.split(' ')[1]
+                }` // change it to Headers later
               }
             }
           )

@@ -47,7 +47,12 @@ garageSchema.pre('save', async function(next) {
   this.GeragePassword = await bcrypt.hash(this.GeragePassword, 12);
   next();
 });
-
+/*
+garageSchema.pre(/^find/, function(next) {
+  this.find({ published: { $ne: false } });
+  next();
+});
+*/
 garageSchema.pre('save', async function(next) {
   this.createdAt = Date.now();
   next();
