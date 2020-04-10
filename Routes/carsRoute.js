@@ -9,21 +9,21 @@ const imageHandler = require('../controllers/imageHandler');
 
 const authController = require('../controllers/aythController');
 
-Router.route('/l').get(newController.SearchMovies); //http://127.0.0.1:3000/cars/l?search=a
+Router.route('/l').get(authController.protect, newController.SearchMovies); //http://127.0.0.1:3000/cars/l?search=a
 
 /*    authController.protect,
     authController.restrictTo('admin'), */
 Router.route('/')
   .get(
-    // authController.protect,
-    authController.isLoggedIn,
+    authController.protect,
+    //authController.isLoggedIn,
     newController.getAllCars
   ) //getAllCars
   .post(
-    //   authController.protect,
+    authController.protect,
     //   authController.restrictTo('admin'),
 
-    authController.isLoggedIn,
+    // authController.isLoggedIn,
     newController.Check,
     imageHandler.uploadImages,
     imageHandler.resizePhotos('Cars'),
@@ -31,20 +31,20 @@ Router.route('/')
   );
 
 Router.route('/:id')
-  .get(authController.isLoggedIn, newController.getCar)
+  .get(authController.protect, newController.getCar)
   .patch(
-    // authController.protect,
+    authController.protect,
     // authController.restrictTo('admin'),
-    authController.isLoggedIn,
+    //authController.isLoggedIn,
     newController.CarsPermission,
     imageHandler.uploadImages,
     imageHandler.resizePhotos('Cars'),
     newController.UpdateCar
   )
   .delete(
-    // authController.protect,
+    authController.protect,
     // authController.restrictTo('admin'),
-    authController.isLoggedIn,
+    //authController.isLoggedIn,
     newController.CarsPermission,
     newController.DeleteCar
   );

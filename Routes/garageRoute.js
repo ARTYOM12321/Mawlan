@@ -8,16 +8,16 @@ const newController = require('../controllers/gerageController');
 const authController = require('../controllers/aythController');
 const imageHandler = require('../controllers/imageHandler');
 
-Router.route('/l').get(newController.SearchGarage); //http://127.0.0.1:3000/garage/l?search=a
+Router.route('/l').get(authController.protect, newController.SearchGarage); //http://127.0.0.1:3000/garage/l?search=a
 
 /*    authController.protect,
     authController.restrictTo('admin'),*/
 Router.route('/')
-  .get(authController.isLoggedIn, newController.getAllGarage)
+  .get(authController.protect, newController.getAllGarage)
   .post(
-    //   authController.protect,
+    authController.protect,
     //   authController.restrictTo('admin'),
-    authController.isLoggedIn,
+    // authController.isLoggedIn,
     imageHandler.uploadImages,
     imageHandler.resizePhotos('Garage'),
     newController.setUserEmail,
@@ -25,11 +25,11 @@ Router.route('/')
   );
 
 Router.route('/:id')
-  .get(authController.isLoggedIn, newController.getGarage)
+  .get(authController.protect, newController.getGarage)
   .patch(
-    // authController.protect,
+    authController.protect,
     // authController.restrictTo('admin'),
-    authController.isLoggedIn,
+    //authController.isLoggedIn,
     imageHandler.uploadImages,
     imageHandler.resizePhotos('Garage'),
     newController.UpdateCheker,
@@ -37,9 +37,8 @@ Router.route('/:id')
     newController.UpdateGarage
   )
   .delete(
-    authController.isLoggedIn,
-
-    // authController.protect,
+    //   authController.isLoggedIn,
+    authController.protect,
     // authController.restrictTo('admin'),
     newController.deleteChecker,
     newController.DeleteGarage
