@@ -1,5 +1,4 @@
 const axios = require('axios').default;
-const bcrypt = require('bcryptjs');
 const factory = require('./HandlerFactory');
 const garage = require('.//..//Models//garageModel');
 const User = require('../Models/UserModel');
@@ -19,7 +18,7 @@ exports.SearchGarage = factory.PartialSearch(garage);
 exports.setUserEmail = catchAsync(async (req, res, next) => {
   if (req.body.ownerEmail) {
     const userfound = await User.find({ Email: req.body.ownerEmail });
-    let workers = [];
+    const workers = [];
 
     if (userfound) {
       req.body.ownerUserId = userfound[0].id;
@@ -138,6 +137,28 @@ exports.deleteChecker = catchAsync(async (req, res, next) => {
       available: false
     }
   );
+  const users = garagefound.worker;
+  const EmailArray = [];
+  users.forEach(el => {
+    EmailArray.push(el._id);
+  });
+  EmailArray.push(garagefound.ownerUserId._id);
 
+  for (const file of EmailArray) {
+    await axios
+      .patch(
+        `https://carappdev.herokuapp.com/api/users/${file}`,
+        {
+          isGarage: false
+        },
+        {
+          headers: {
+            authorization: `Bearer ${req.headers.authorization.split(' ')[1]}` // change it to Headers later
+          }
+        }
+      )
+      .then(Response => {})
+      .catch(err => {});
+  }
   next();
 });
