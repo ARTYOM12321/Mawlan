@@ -109,6 +109,7 @@ exports.getOne = (Model, populateOptions) =>
 
 exports.getAll = Model =>
   catchAsync(async (req, res, next) => {
+    req.query.published = true;
     //to Allow for nested Get Reviews on tour(hack)
     let filter = {};
     if (req.params.tourId) filter = { _id: req.params.tourId };
