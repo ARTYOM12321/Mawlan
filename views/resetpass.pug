@@ -80,7 +80,6 @@ body
         strong Save
     script.
       var x=document.getElementById("resetpass");
-       alert(window.location.pathname.split("/")[2])
       x.addEventListener("submit", (e) => {
         axios({
           method: 'Patch',
