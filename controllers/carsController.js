@@ -35,6 +35,9 @@ exports.CarsPermission = factory.UserPermission(cars);
 
 exports.Check = async (req, res, next) => {
   //check the properties
+  if (req.body.individual === 'true') req.body.individual = true;
+  if (req.body.individual === 'false') req.body.individual = false;
+
   if (req.UserDetails.isGarage == true && req.body.individual == false) {
     //looking for the garage in two queries
     let garagefound;
