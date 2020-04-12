@@ -28,7 +28,7 @@ Router.route('/:id')
   .get(authController.protect, newController.getGarage)
   .patch(
     authController.protect,
-    // authController.restrictTo('admin'),
+    //authController.restrictTo('admin'),
     //authController.isLoggedIn,
     imageHandler.uploadImages,
     imageHandler.resizePhotos('Garage'),

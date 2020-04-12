@@ -7,11 +7,14 @@ module.exports = class Email {
     this.to = user.Email;
     this.firstName = user.name.split(' ')[0];
     this.url = url;
-    this.from = `Sirius Team <${process.env.EMAIL_FROM}>`;
+    this.from = `Car Application <${process.env.EMAIL_FROM}>`;
   }
 
   newTransport() {
-    if (process.env.NODE_ENV === 'production') {
+    if (
+      process.env.NODE_ENV === 'production' ||
+      process.env.NODE_ENV === 'development'
+    ) {
       //sendgrid
       return nodemailer.createTransport({
         service: 'sendGrid',
@@ -63,7 +66,7 @@ module.exports = class Email {
   async sendPasswordReset() {
     await this.send(
       'passwordreset',
-      'Your Password Reset Token(Valid for only 10 minutes)'
+      'Your PasswordReset Token(Valid for only 10 minutes)'
     );
   }
 };
