@@ -62,6 +62,13 @@ app.use('/api', limiter);
 app.use('/api/users', userRouter);
 app.use('/api/cars', carsRouter);
 app.use('/api/garage', garageRouter);
+
+app.use('/resetPassword/:token', function(req, res, next) {
+  res.status(200).render('resetpass', {
+    title: 'Single'
+  });
+});
+
 //events--------
 
 //-------------

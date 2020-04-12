@@ -42,7 +42,7 @@
 //===============================CARS=============================================================//
 
 // ADD A CAR :
-//*   https://carappdev.herokuapp.com/api/garage/5e91182fd05b3f001734e21c  *// < ID 
+//*   https://carappdev.herokuapp.com/api/cars  *// < ID 
 //
 //Bas Aw Fieldanay Zyad bwa!
 {"garagePassword":"12345",  //AGAR isGarage True Be w Individual False be daway password daka
