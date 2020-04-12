@@ -22,9 +22,8 @@ exports.setUserEmail = catchAsync(async (req, res, next) => {
 
     if (userfound) {
       req.body.ownerUserId = userfound[0].id;
-      const em = JSON.parse(req.body.workerEmail);
-      console.log(em);
-      if (em.workerEmail)
+      console.log(req.body.workerEmail);
+      if (req.body.workerEmail)
         req.body.workerEmail = req.body.workerEmail.workerEmail;
       console.log(req.body);
       if (req.body.workerEmail && req.body.workerEmail.length !== 0) {
