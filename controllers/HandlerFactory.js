@@ -24,10 +24,6 @@ exports.deleteOne = Model =>
 
 exports.UpdateOne = Model =>
   catchAsync(async (req, res, next) => {
-    console.log(req.body);
-    console.log('******************************************');
-    console.log(req.body.listOfImages);
-
     if (req.body.PostOwner) req.body.PostOwner = null;
 
     const doc = await Model.findByIdAndUpdate(req.params.id, req.body, {
