@@ -22,10 +22,7 @@ exports.setUserEmail = catchAsync(async (req, res, next) => {
 
     if (userfound) {
       req.body.ownerUserId = userfound[0].id;
-      console.log(req.body.workerEmail);
-      if (req.body.workerEmail)
-        req.body.workerEmail = req.body.workerEmail.workerEmail;
-      console.log(req.body);
+      req.body.workerEmail = req.body.reqEmails.split(',');
       if (req.body.workerEmail && req.body.workerEmail.length !== 0) {
         for (const file of req.body.workerEmail) {
           const workerfound = await User.find({ Email: file });
