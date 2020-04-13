@@ -66,7 +66,7 @@ exports.CreateOne = Model =>
     if (!req.body.PostOwner) req.body.PostOwner = req.UserDetails._id;
 
     const doc = await Model.create(req.body);
-
+    const doc2 = await Model.findById(doc.id);
     let userHolder = '';
     if (!res.locals.user) {
       res.locals.user = 'No user';
@@ -75,7 +75,7 @@ exports.CreateOne = Model =>
 
     res.status(201).json({
       status: 'success',
-      data: doc,
+      data: doc2,
       user: userHolder
     });
   });
