@@ -35,7 +35,8 @@ const garageSchema = new mongoose.Schema(
     GeragePassword: {
       type: String,
       maxlength: 6
-    }
+    },
+    createdAt: Date
   },
   {
     toJSON: { virtuals: true },

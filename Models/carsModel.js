@@ -66,7 +66,8 @@ const carsSchema = new mongoose.Schema(
     available: {
       type: Boolean,
       default: true
-    }
+    },
+    createdAt: Date
   },
   {
     toJSON: { virtuals: true },
