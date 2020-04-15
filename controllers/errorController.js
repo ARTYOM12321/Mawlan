@@ -30,7 +30,7 @@ const sendErrorDev = (err, req, res) => {
     });
     //B RENDERED WEBSITE ERROR
   } else {
-    res.status(err.statusCode).json({
+    res.status(err.statusCode).render('error', {
       title: 'somethin went wrong',
       msg: err.message
     });
@@ -57,16 +57,16 @@ const sendErrorProduct = (err, req, res) => {
   }
   //operational, trusted error , send message to clint
   if (err.isOperational) {
-    res.status(err.statusCode).json({
-      title: 'somethin went wrong',
+    res.status(err.statusCode).render('error', {
+      title: 'Something went wrong',
       msg: err.message
     });
     //programming or other unknown errors;dont leak
   } else {
     //rendered website
-    res.status(err.statusCode).json({
-      title: 'somethin went wrong',
-      msg: err.message
+    res.status(err.statusCode).render('error', {
+      title: 'Something went Wrong',
+      msg: 'please try again later'
     });
   }
 };
