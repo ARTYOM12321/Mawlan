@@ -4,16 +4,9 @@ const AppError = require('./../utils/error');
 const catchAsync = require('../utils/CatchAsync');
 const User = require('../Models/UserModel');
 const factory = require('./HandlerFactory');
+const cars = require('.//..//Models//carsModel');
+const garage = require('.//..//Models//garageModel');
 
-/*const multerStorage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'public/img/users/');
-  },
-  filename: (req, file, cb) => {
-    const ext = file.mimetype.split('/')[1];
-    cb(null, `user-${req.user.id}-${Date.now()}.${ext}`);
-  }
-}); */
 const multerStorage = multer.memoryStorage();
 const multerFilter = (req, file, cb) => {
   if (file.mimetype.startsWith('image')) {
@@ -79,12 +72,13 @@ exports.updateMe = catchAsync(async (req, res, next) => {
     req.body,
     'name',
     'Email',
-    'likes',
-    'bio',
-    'active'
+    'phone',
+    'active',
+    'isGarage'
   );
 
   if (req.file) FilteredBody.photo = req.file.filename;
+
   const updatedUser = await User.findByIdAndUpdate(req.user.id, FilteredBody, {
     new: true,
     runValidators: true
@@ -98,11 +92,40 @@ exports.updateMe = catchAsync(async (req, res, next) => {
 });
 
 exports.deleteMe = catchAsync(async (req, res, next) => {
+  await cars.deleteMany({ PostOwner: req.user.id, individual: true });
+
+  let garagefound;
+  garagefound = await garage.find({
+    worker: req.user._id
+  });
+
+  if (garagefound.length === 0) {
+    garagefound = await garage.find({
+      ownerUserId: req.user._id
+    });
+    if (garagefound.length !== 0) {
+      await garage.findByIdAndUpdate(garagefound[0]._id, {
+        published: false,
+        worker: []
+      });
+    }
+  } else {
+    const EmailArray = [];
+    garagefound[0].worker.forEach(el => {
+      EmailArray.push(el._id);
+    });
+    const indextodelete = EmailArray.indexOf(req.user._id);
+    EmailArray.splice(indextodelete, 1);
+    await garage.findByIdAndUpdate(garagefound[0]._id, {
+      worker: EmailArray
+    });
+  }
+
   await User.findByIdAndUpdate(req.user.id, { active: false });
 
-  res.status(204).json({
+  res.status(200).json({
     status: 'success',
-    data: null
+    data: 'User Successfully deleted!'
   });
 });
 

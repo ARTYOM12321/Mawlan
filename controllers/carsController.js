@@ -30,7 +30,7 @@ exports.getCar = factory.getOne(cars);
 exports.CreateCar = factory.CreateOne(cars);
 exports.UpdateCar = factory.UpdateOne(cars);
 exports.DeleteCar = factory.deleteOne(cars);
-exports.SearchMovies = (req, res, next) => { }
+exports.SearchMovies = factory.PartialSearch(cars);
 exports.CarsPermission = factory.UserPermission(cars);
 
 exports.Check = async (req, res, next) => {
@@ -38,13 +38,17 @@ exports.Check = async (req, res, next) => {
   console.log(req.body);
   console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
   console.log(req.body.individual);
-  if (req.body.individual == 'true') req.body.individual = true;
-  if (req.body.individual == 'false') req.body.individual = false;
+  if (req.body.individual === 'true') {
+    req.body.individual = true;
+  }
+  if (req.body.individual === 'false') {
+    req.body.individual = false;
+  }
   console.log('#######################################3');
   console.log(req.body.individual);
   console.log('#######################@@@@@@@@@@@@@@@@@@@@@');
   console.log(req.body.garagePassword);
-  if (req.UserDetails.isGarage == true && req.body.individual == false) {
+  if (req.UserDetails.isGarage === true) {
     //looking for the garage in two queries
     let garagefound;
     garagefound = await garage.find({
