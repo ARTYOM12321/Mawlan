@@ -63,10 +63,14 @@ exports.Check = async (req, res, next) => {
       return next(new AppError('No Gerage found for this user!', 403));
 
     //Now we have the result , lets check for the garage password
+    console.log('Hi I Am HERE UP ');
+
     const result = await bcrypt.compare(
       req.body.garagePassword,
       garagefound[0].GeragePassword
     );
+    console.log('Hi I Am HERE DOWN ');
+
     if (!result) {
       return next(new AppError('Garage Password is wrong!', 403));
     }
