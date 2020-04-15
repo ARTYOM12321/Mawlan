@@ -35,8 +35,15 @@ exports.CarsPermission = factory.UserPermission(cars);
 
 exports.Check = async (req, res, next) => {
   //check the properties
-  if (req.body.garagePassword) req.body.individual = false;
-  else req.body.individual = true;
+  console.log(req.body);
+  console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
+  console.log(req.body.individual);
+  if (req.body.individual == 'true') req.body.individual = true;
+  if (req.body.individual == 'false') req.body.individual = false;
+  console.log('#######################################3');
+  console.log(req.body.individual);
+  console.log('#######################@@@@@@@@@@@@@@@@@@@@@');
+  console.log(req.body.garagePassword);
   if (req.UserDetails.isGarage == true && req.body.individual == false) {
     //looking for the garage in two queries
     let garagefound;
@@ -61,6 +68,9 @@ exports.Check = async (req, res, next) => {
     }
     //if everything is alright , then add this property to the Body
     req.body.garageId = garagefound[0].id;
+
+    console.log('@#$@#$@#$');
+    console.log(req.body.garageId);
   }
 
   next();
