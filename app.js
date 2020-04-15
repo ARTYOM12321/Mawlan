@@ -1,5 +1,4 @@
 //.............TOP LEVEL CODE................
-const bodyParser = require('body-parser');
 const path = require('path');
 const express = require('express');
 const rateLimit = require('express-rate-limit');
@@ -15,35 +14,41 @@ const AppError = require('./utils/error');
 
 //Start Express App
 const app = express();
-app.use(
-  bodyParser.urlencoded({
-    extended: true
-  })
-);
-
+//
 //
 app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views'));
 //
-const userRouter = require('./Routes/userRoutes');
-const carsRouter = require('./Routes/carsRoute');
-const garageRouter = require('./Routes/garageRoute');
-const favoritesRouter = require('./Routes/favoritesRoute');
+//
 
+const tourRouter = require('./Routes/tourRoutes');
+const postRouter = require('./Routes/postsRoute');
+const userRouter = require('./Routes/userRoutes');
+const reviewRoute = require('./Routes/reviewRoute');
+const viewRoute = require('./Routes/viewRoute');
+
+//
+//
 app.use(
   express.json({
     limit: '10kb'
   })
 );
 app.use(cookieParser());
-app.use(express.urlencoded({ extended: true, limit: '10kb' }));
-
+//app.use(express.urlencoded({ extended: true, limit: '10kb' }));
 //
 app.use(mongoSanitize());
 app.use(xss());
 app.use(
   hpp({
-    whitelist: ['name', 'newsBrief', 'newsbody', 'NPictures', 'Postbrief']
+    whitelist: [
+      'title',
+      'type',
+      'PostContent',
+      'Postbody',
+      'slug',
+      'coverPhoto'
+    ]
   })
 );
 
@@ -60,27 +65,14 @@ app.use('/api', limiter);
 //
 //
 //
-app.use('/api/users', userRouter);
-app.use('/api/cars', carsRouter);
-app.use('/api/garage', garageRouter);
-app.use('/api/favorites', favoritesRouter);
+//
+app.use('/', viewRoute);
+app.use('/api/v1/users', userRouter);
+app.use('/api/v1/reviews', reviewRoute);
+app.use('/api/v1/posts', postRouter);
 
-//RENDERING THE PAGE
-app.use('/resetPassword/:token', function(req, res, next) {
-  res.status(200).render('resetpass', {
-    title: 'Single'
-  });
-});
-
-//events--------
-
-//-------------
 app.all('*', (req, res, next) => {
-  next(new AppError(`Cant find ${req.originalUrl} on the API`, 404));
-  /* if (req.url.includes('/en/')) next(new AppError(`Page Not Found`, 404));
-  else if (req.url.includes('/ar/'))
-    next(new AppError(`الصفحة غير موجودة`, 404));
-  else next(new AppError(`ببورە ئەم لینكە نەدۆزرایەوە`, 404)); */
+  next(new AppError(`Cant find ${req.originalUrl} on the Website`, 404));
 });
 
 app.use(globalErrorHandler);
