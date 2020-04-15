@@ -17,8 +17,16 @@ const userSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    enum: ['admin', 'adgarage', 'moderator', 'user'],
+    enum: ['user', 'guide', 'lead-guide', 'admin'],
     default: 'user'
+  },
+  likes: {
+    type: String,
+    default: ''
+  },
+  bio: {
+    type: String,
+    default: ''
   },
   photo: {
     type: String,
@@ -26,7 +34,7 @@ const userSchema = new mongoose.Schema({
   },
   Password: {
     type: String,
-    required: [true, 'User must have password'],
+    required: [true, '.User must have password'],
     minlength: 8,
     select: false
   },
@@ -39,13 +47,6 @@ const userSchema = new mongoose.Schema({
       },
       message: 'PasswordConfirm is not same as Password'
     }
-  },
-  phone: {
-    type: String
-  },
-  isGarage: {
-    type: Boolean,
-    default: false
   },
   passwordChangedAt: Date,
   PasswordResetToken: String,
