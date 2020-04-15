@@ -35,19 +35,18 @@ const createSendToken = (user, statusCode, res) => {
 };
 exports.signup = catchAsync(async (req, res, next) => {
   const newUser = await User.create(req.body);
-  //const url = `${req.protocol}://${req.get('host')}/changeinfo`;
-  //await new Email(newUser, url).sendWelcome();
-  await createSendToken(newUser, 201, res);
+  const url = `${req.protocol}://${req.get('host')}/changeinfo`;
+  await new Email(newUser, url).sendWelcome();
+  createSendToken(newUser, 201, res);
 });
 
 exports.login = catchAsync(async (req, res, next) => {
   const email = req.body.Email;
   const password = req.body.Password;
+
   //1) if email and pass exist
   if (!email || !password) {
-    return next(
-      new AppError('please fill both Emailand Password Fields :D', 400)
-    );
+    return next(new AppError('please Provide Email And Password', 400));
   }
   //2) check if user exist && password is correct (search within the database)
   const user = await User.findOne({ Email: email }).select('+Password');
@@ -67,7 +66,9 @@ exports.logout = (req, res) => {
 };
 
 exports.protect = catchAsync(async (req, res, next) => {
+  //1) getting token and check it's
   let token;
+  //spliting token and save it to token
   if (
     req.headers.authorization &&
     req.headers.authorization.startsWith('Bearer')
@@ -77,7 +78,7 @@ exports.protect = catchAsync(async (req, res, next) => {
     token = req.cookies.jwt;
   }
   if (!token) {
-    return next(new AppError('ئەم لینكە بەردەست نیە', 401));
+    return next(new AppError('You are not Logged in!', 401));
   }
   //2) verfication the signtoken
   const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
@@ -98,28 +99,16 @@ exports.protect = catchAsync(async (req, res, next) => {
   //grant access to protected routes
   req.user = freshUser;
   res.locals.user = freshUser;
-  req.UserDetails = freshUser;
-
   next();
 });
 
 //Only for rendered pages , No Errors~
 exports.isLoggedIn = async (req, res, next) => {
   try {
-    let token;
-    if (
-      req.headers.authorization &&
-      req.headers.authorization.startsWith('Bearer')
-    ) {
-      token = req.headers.authorization.split(' ')[1];
-    } else if (req.cookies.jwt) {
-      token = req.cookies.jwt;
-    }
-
-    if (token) {
+    if (req.cookies.jwt) {
       //verify the token
       const decoded = await promisify(jwt.verify)(
-        token,
+        req.cookies.jwt,
         process.env.JWT_SECRET
       );
       //2) check if user still exist
@@ -133,7 +122,6 @@ exports.isLoggedIn = async (req, res, next) => {
       }
       //there is a Logged in User
       res.locals.user = freshUser;
-      req.UserDetails = freshUser;
     }
   } catch (err) {
     return next();
@@ -146,7 +134,9 @@ exports.restrictTo = (...roles) => {
   return (req, res, next) => {
     //roles is an array ['admin','lead']; role now is user
     if (!roles.includes(req.user.role)) {
-      return next(new AppError('كارەكە سەركەوتوو نەبوو', 403));
+      return next(
+        new AppError('You dont have permission to perform this action', 403)
+      );
     }
     next();
   };
@@ -171,7 +161,7 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
   try {
     const resetURL = `${req.protocol}://${req.get(
       'host'
-    )}/resetPassword/${resetToken}`;
+    )}/users/resetPassword/${resetToken}`;
     await new Email(user, resetURL).sendPasswordReset();
     res.status(200).json({
       status: 'success',
