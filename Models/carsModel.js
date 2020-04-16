@@ -84,6 +84,7 @@ carsSchema.pre(/^find/, function(next) {
   });
   next();
 });
+/*
 carsSchema.pre(/^find/, function(next) {
   this.populate({
     path: 'garageId',
@@ -91,7 +92,7 @@ carsSchema.pre(/^find/, function(next) {
   });
   next();
 });
-
+*/
 carsSchema.pre('save', async function(next) {
   this.createdAt = Date.now();
   next();
