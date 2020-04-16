@@ -33,22 +33,17 @@ exports.DeleteCar = factory.deleteOne(cars);
 exports.SearchMovies = factory.PartialSearch(cars);
 exports.CarsPermission = factory.UserPermission(cars);
 
-exports.Check = async (req, res, next) => {
+exports.Check = catchAsync(async (req, res, next) => {
   //check the properties
-  console.log(req.body);
-  console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
-  console.log(req.body.individual);
+  req.filesUploaded = req.files;
   if (req.body.individual === 'true') {
     req.body.individual = true;
   }
   if (req.body.individual === 'false') {
     req.body.individual = false;
   }
-  console.log('#######################################3');
-  console.log(req.body.individual);
-  console.log('#######################@@@@@@@@@@@@@@@@@@@@@');
-  console.log(req.body.garagePassword);
-  if (req.UserDetails.isGarage === true) {
+
+  if (req.UserDetails.isGarage === true && req.body.individual == false) {
     //looking for the garage in two queries
     let garagefound;
     garagefound = await garage.find({
@@ -63,23 +58,17 @@ exports.Check = async (req, res, next) => {
       return next(new AppError('No Gerage found for this user!', 403));
 
     //Now we have the result , lets check for the garage password
-    console.log('Hi I Am HERE UP ');
 
     const result = await bcrypt.compare(
       req.body.garagePassword,
       garagefound[0].GeragePassword
     );
-    console.log('Hi I Am HERE DOWN ');
 
     if (!result) {
       return next(new AppError('Garage Password is wrong!', 403));
     }
-    //if everything is alright , then add this property to the Body
+    //if everything is alr1ight , then add this property to the Body
     req.body.garageId = garagefound[0].id;
-
-    console.log('@#$@#$@#$');
-    console.log(req.body.garageId);
   }
-
   next();
-};
+});
