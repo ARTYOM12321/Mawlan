@@ -1,4 +1,5 @@
 const express = require('express');
+const formidable = require('express-formidable');
 
 const Router = express.Router({
   mergeParams: true
@@ -24,8 +25,10 @@ Router.route('/')
     //   authController.restrictTo('admin'),
 
     // authController.isLoggedIn,
-    newController.Check,
+    //formidable(),
+
     imageHandler.uploadImages,
+    newController.Check,
     imageHandler.resizePhotos('Cars'),
     newController.CreateCar
   );
