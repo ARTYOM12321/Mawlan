@@ -18,8 +18,18 @@ const favoriteSchema = new mongoose.Schema(
     toObject: { virtuals: true }
   }
 );
+
 favoriteSchema.index({ userid: 1 });
 favoriteSchema.index({ postid: 1 });
+
+favoriteSchema.pre(/^find/, function(next) {
+  this.populate({
+    path: 'postid',
+    select: 'name Price theModel listOfImages -PostOwner'
+  });
+  next();
+});
+
 favoriteSchema.pre('save', async function(next) {
   this.createdAt = Date.now();
   next();
