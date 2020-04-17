@@ -1,5 +1,4 @@
 const express = require('express');
-const formidable = require('express-formidable');
 
 const Router = express.Router({
   mergeParams: true
