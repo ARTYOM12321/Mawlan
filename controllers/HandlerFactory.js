@@ -67,6 +67,7 @@ exports.CreateOne = Model =>
 
     const doc = await Model.create(req.body);
     const doc2 = await Model.findById(doc.id);
+
     let userHolder = '';
     if (!res.locals.user) {
       res.locals.user = 'No user';
@@ -161,21 +162,4 @@ exports.PartialSearch = Model =>
       result: Posts.length,
       data: Posts
     });
-  });
-
-exports.UserPermission = Model =>
-  catchAsync(async (req, res, next) => {
-    if (!req.params.id) next(new AppError('wrong url', 403));
-
-    const itemfound = await Model.find({ _id: req.params.id });
-
-    if (!itemfound) next(new AppError('Not Found', 403));
-    if (!req.UserDetails)
-      next(new AppError('Please LogIn in order to do this action', 403));
-    const user = req.UserDetails.id;
-    if (user.localeCompare(itemfound[0].PostOwner._id) === 0) {
-      next();
-    } else {
-      next(new AppError('You Dont Have Permission to do this Action!', 403));
-    }
   });

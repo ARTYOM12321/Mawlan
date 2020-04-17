@@ -31,11 +31,9 @@ exports.CreateCar = factory.CreateOne(cars);
 exports.UpdateCar = factory.UpdateOne(cars);
 exports.DeleteCar = factory.deleteOne(cars);
 exports.SearchMovies = factory.PartialSearch(cars);
-exports.CarsPermission = factory.UserPermission(cars);
 
 exports.Check = catchAsync(async (req, res, next) => {
   //check the properties
-  req.filesUploaded = req.files;
   if (req.body.individual === 'true') {
     req.body.individual = true;
   }
@@ -58,7 +56,8 @@ exports.Check = catchAsync(async (req, res, next) => {
       return next(new AppError('No Gerage found for this user!', 403));
 
     //Now we have the result , lets check for the garage password
-
+    if (!req.body.garagePassword)
+      return next(new AppError('user Should Provide Password!', 403));
     const result = await bcrypt.compare(
       req.body.garagePassword,
       garagefound[0].GeragePassword
@@ -71,4 +70,30 @@ exports.Check = catchAsync(async (req, res, next) => {
     req.body.garageId = garagefound[0].id;
   }
   next();
+});
+
+exports.CarsPermission = catchAsync(async (req, res, next) => {
+  if (!req.params.id) next(new AppError('Wrong Url', 400));
+
+  const itemfound = await cars.find({ _id: req.params.id });
+
+  if (!itemfound) next(new AppError('No Posts were Found', 403));
+  const user = req.UserDetails.id;
+  if (user.localeCompare(itemfound[0].PostOwner._id) === 0) {
+    next();
+  } else if (req.UserDetails.isGarage === true) {
+    //
+    const garagefound = await garage.find({
+      ownerUserId: req.UserDetails._id
+    });
+
+    //
+    if (user.localeCompare(garagefound[0].ownerUserId._id) === 0) {
+      next();
+    } else {
+      next(new AppError('You Dont Have Permission to do this Action!', 403));
+    }
+  } else {
+    next(new AppError('You Dont Have Permission to do this Action!', 403));
+  }
 });
