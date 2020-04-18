@@ -24,11 +24,13 @@ Router.route('/')
     newController.Createfavs
   );
 
-Router.route('/:id').delete(
-  authController.isLoggedIn,
-  // authController.protect,
-  // authController.restrictTo('admin'),
-  newController.Deletefavs
-);
+Router.route('/:id')
+  .get(authController.protect, newController.getfavs)
+  .delete(
+    authController.isLoggedIn,
+    // authController.protect,
+    // authController.restrictTo('admin'),
+    newController.Deletefavs
+  );
 
 module.exports = Router;
