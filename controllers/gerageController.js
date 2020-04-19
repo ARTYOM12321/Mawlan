@@ -1,3 +1,4 @@
+/* eslint-disable */
 const axios = require('axios').default;
 const factory = require('./HandlerFactory');
 const garage = require('.//..//Models//garageModel');
@@ -27,7 +28,7 @@ exports.setUserEmail = catchAsync(async (req, res, next) => {
 
     if (userfound) {
       req.body.ownerUserId = userfound[0].id;
-      if (req.body.reqEmails !== '')
+      if (req.body.reqEmails !== '' && req.body.reqEmails !== undefined)
         req.body.workerEmail = req.body.reqEmails.split(',');
       else req.body.reqEmails = [];
       if (req.body.workerEmail && req.body.workerEmail.length !== 0) {
@@ -65,7 +66,6 @@ exports.UpdateCheker = catchAsync(async (req, res, next) => {
 
   if (req.body.published == true || req.body.published == false) {
     if (req.UserDetails.role === 'admin') {
-      /* eslint-disable */
       const headerr = `Bearer ${req.headers.authorization.split(' ')[1]}`;
       for (const file of EmailArray) {
         await axios
@@ -145,9 +145,7 @@ exports.UpdateWorker = catchAsync(async (req, res, next) => {
 const cars = require('.//..//Models//carsModel');
 
 exports.deleteChecker = catchAsync(async (req, res, next) => {
-  if (req.UserDetails.role !== 'admin')
-    next(new AppError('Only Admin Allowed to do this Action!', 403));
-  const garagefound = await garage.findById(req.params.id);
+  const garagefound = await garage.findById(req.params.id, '-GeragePassword');
 
   if (!garagefound) next(new AppError('Garage not Found!', 400));
 
@@ -157,29 +155,44 @@ exports.deleteChecker = catchAsync(async (req, res, next) => {
       available: false
     }
   );
-  const users = garagefound.worker;
-  const EmailArray = [];
-  users.forEach(el => {
-    EmailArray.push(el._id);
-  });
-  EmailArray.push(garagefound.ownerUserId._id);
+  console.log('UP HERE');
+  if (req.UserDetails.role !== 'admin') {
+    const garagefound = await garage.findOneAndUpdate(req.params.id, {
+      published: false
+    });
+    res.status(200).json({
+      status: 'success',
+      message:
+        'Garage in Unpublished : Please Wait for Admin Review To Delete it Completly'
+    });
+  } else {
+    console.log('Downhere');
 
-  for (const file of EmailArray) {
-    await axios
-      .patch(
-        `https://carappdev.herokuapp.com/api/users/${file}`,
-        {
-          isGarage: false,
-          role: 'user'
-        },
-        {
-          headers: {
-            authorization: `Bearer ${req.headers.authorization.split(' ')[1]}` // change it to Headers later
+    const users = garagefound.worker;
+    1;
+    const EmailArray = [];
+    users.forEach(el => {
+      EmailArray.push(el._id);
+    });
+    EmailArray.push(garagefound.ownerUserId._id);
+
+    for (const file of EmailArray) {
+      await axios
+        .patch(
+          `https://carappdev.herokuapp.com/api/users/${file}`,
+          {
+            isGarage: false,
+            role: 'user'
+          },
+          {
+            headers: {
+              authorization: `Bearer ${req.headers.authorization.split(' ')[1]}` // change it to Headers later
+            }
           }
-        }
-      )
-      .then(Response => {})
-      .catch(err => {});
+        )
+        .then(Response => {})
+        .catch(err => {});
+    }
+    next();
   }
-  next();
 });
