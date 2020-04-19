@@ -4,8 +4,7 @@ const ExpressBrute = require('express-brute');
 const AppError = require('./../utils/error');
 
 const failCallback = function(req, res, next, nextValidRequestDate) {
-  return next(new AppError('to Much Log In', 404));
-  // res.redirect('/me'); // brute force protection triggered, send them back to the login page
+  return next(new AppError('to Much Log In,Please Try Again Later!', 404));
 };
 const store = new ExpressBrute.MemoryStore(); // stores state locally, don't use this in production
 const bruteforce = new ExpressBrute(store, {
@@ -31,7 +30,7 @@ Router.patch('/resetPassword/:token', authController.resetPassword);
 //YOU SHOUDL BE LOGGED IN
 Router.use(authController.protect);
 
-Router.get('/me', userController.getMe, userController.getUser);
+//Router.get('/me', userController.getMe, userController.getUser);
 //..................change Email and pass and name...............
 //change Password for logged in user
 Router.patch('/updateMyPassword', authController.updatePassword);

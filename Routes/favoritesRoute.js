@@ -10,27 +10,18 @@ const authController = require('../controllers/aythController');
 /*    authController.protect,
     authController.restrictTo('admin'),*/
 Router.route('/')
-  .get(
-    //authController.protect
-    authController.isLoggedIn,
-    newController.setUserPostid,
-    newController.getAllfavs
-  )
+  .get(authController.protect, newController.getAllfavs)
   .post(
-    // authController.protect,
-    //   authController.restrictTo('admin'),
-    authController.isLoggedIn,
+    authController.protect,
     newController.setUserPostid,
     newController.Createfavs
   );
 
-Router.route('/:id')
-  .get(authController.protect, newController.getfavs)
-  .delete(
-    authController.isLoggedIn,
-    // authController.protect,
-    // authController.restrictTo('admin'),
-    newController.Deletefavs
-  );
+Router.route('/:id').delete(
+  //CHECKKK
+  authController.protect,
+  newController.deleteCheck,
+  newController.Deletefavs
+);
 
 module.exports = Router;

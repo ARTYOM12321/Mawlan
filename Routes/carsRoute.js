@@ -11,8 +11,7 @@ const authController = require('../controllers/aythController');
 
 Router.route('/l').get(authController.protect, newController.SearchMovies); //http://127.0.0.1:3000/cars/l?search=a
 
-/*    authController.protect,
-    authController.restrictTo('admin'), */
+/*   authController.restrictTo('admin'), */
 Router.route('/')
   .get(
     authController.protect,
@@ -22,10 +21,6 @@ Router.route('/')
   .post(
     authController.protect,
     //   authController.restrictTo('admin'),
-
-    // authController.isLoggedIn,
-    //formidable(),
-
     imageHandler.uploadImages,
     newController.Check,
     imageHandler.resizePhotos('Cars'),
@@ -37,7 +32,6 @@ Router.route('/:id')
   .patch(
     authController.protect,
     // authController.restrictTo('admin'),
-    //authController.isLoggedIn,
     newController.CarsPermission,
     imageHandler.uploadImages,
     imageHandler.resizePhotos('Cars'),
@@ -46,7 +40,6 @@ Router.route('/:id')
   .delete(
     authController.protect,
     // authController.restrictTo('admin'),
-    //authController.isLoggedIn,
     newController.CarsPermission,
     newController.DeleteCar
   );

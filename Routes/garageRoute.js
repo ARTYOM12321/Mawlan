@@ -13,11 +13,13 @@ Router.route('/l').get(authController.protect, newController.SearchGarage); //ht
 /*    authController.protect,
     authController.restrictTo('admin'),*/
 Router.route('/')
-  .get(authController.protect, newController.getAllGarage)
+  .get(
+    authController.protect,
+    newController.getAllChecker,
+    newController.getAllGarage
+  )
   .post(
     authController.protect,
-    //   authController.restrictTo('admin'),
-    // authController.isLoggedIn,
     imageHandler.uploadImages,
     imageHandler.resizePhotos('Garage'),
     newController.setUserEmail,
@@ -28,8 +30,7 @@ Router.route('/:id')
   .get(authController.protect, newController.getGarage)
   .patch(
     authController.protect,
-    //authController.restrictTo('admin'),
-    //authController.isLoggedIn,
+    authController.restrictTo('admin', 'adminGarage'),
     imageHandler.uploadImages,
     imageHandler.resizePhotos('Garage'),
     newController.UpdateCheker,
@@ -37,9 +38,8 @@ Router.route('/:id')
     newController.UpdateGarage
   )
   .delete(
-    //   authController.isLoggedIn,
     authController.protect,
-    // authController.restrictTo('admin'),
+    authController.restrictTo('admin', 'adminGarage'),
     newController.deleteChecker,
     newController.DeleteGarage
   );
