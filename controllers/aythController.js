@@ -34,6 +34,7 @@ const createSendToken = (user, statusCode, res) => {
   });
 };
 exports.signup = catchAsync(async (req, res, next) => {
+  req.body.role = 'user';
   const newUser = await User.create(req.body);
   //const url = `${req.protocol}://${req.get('host')}/changeinfo`;
   //await new Email(newUser, url).sendWelcome();
@@ -46,7 +47,7 @@ exports.login = catchAsync(async (req, res, next) => {
   //1) if email and pass exist
   if (!email || !password) {
     return next(
-      new AppError('please fill both Emailand Password Fields :D', 400)
+      new AppError('please fill both Email and Password Fields :D', 400)
     );
   }
   //2) check if user exist && password is correct (search within the database)

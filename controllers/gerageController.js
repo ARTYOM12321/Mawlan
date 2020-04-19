@@ -15,6 +15,11 @@ exports.UpdateGarage = factory.UpdateOne(garage);
 exports.DeleteGarage = factory.deleteOne(garage);
 exports.SearchGarage = factory.PartialSearch(garage);
 
+exports.getAllChecker = (req, res, next) => {
+  if (req.user.role !== 'admin') req.query.published = true;
+  next();
+};
+
 exports.setUserEmail = catchAsync(async (req, res, next) => {
   if (req.body.ownerEmail) {
     const userfound = await User.find({ Email: req.body.ownerEmail });
@@ -47,9 +52,6 @@ exports.UpdateCheker = catchAsync(async (req, res, next) => {
     return next(new AppError('Garage Not Found!', 403));
   const users = garagefound[0].worker;
 
-  /* if (users.length === 0 && !req.body.workerEmail)
-    return next(new AppError('Couldnt fetch Users!', 403)); */
-
   const EmailArray = [];
   users.forEach(el => {
     EmailArray.push(el._id);
@@ -63,6 +65,8 @@ exports.UpdateCheker = catchAsync(async (req, res, next) => {
 
   if (req.body.published == true || req.body.published == false) {
     if (req.UserDetails.role === 'admin') {
+      /* eslint-disable */
+      const headerr = `Bearer ${req.headers.authorization.split(' ')[1]}`;
       for (const file of EmailArray) {
         await axios
           .patch(
@@ -72,17 +76,29 @@ exports.UpdateCheker = catchAsync(async (req, res, next) => {
             },
             {
               headers: {
-                authorization: `Bearer ${
-                  req.headers.authorization.split(' ')[1]
-                }` // change it to Headers later
+                authorization: headerr
               }
             }
           )
           .then(Response => {})
           .catch(err => {});
       }
+      let roleselected = req.body.published == true ? 'adminGarage' : 'user';
+      await axios
+        .patch(
+          `https://carappdev.herokuapp.com/api/users/${garagefound[0].ownerUserId._id}`,
+          {
+            role: roleselected
+          },
+          {
+            headers: {
+              authorization: headerr
+            }
+          }
+        )
+        .catch(err => {});
     } else {
-      req.body.published = undefined;
+      delete req.body.published;
     }
   }
 
@@ -129,6 +145,8 @@ exports.UpdateWorker = catchAsync(async (req, res, next) => {
 const cars = require('.//..//Models//carsModel');
 
 exports.deleteChecker = catchAsync(async (req, res, next) => {
+  if (req.UserDetails.role !== 'admin')
+    next(new AppError('Only Admin Allowed to do this Action!', 403));
   const garagefound = await garage.findById(req.params.id);
 
   if (!garagefound) next(new AppError('Garage not Found!', 400));
@@ -151,7 +169,8 @@ exports.deleteChecker = catchAsync(async (req, res, next) => {
       .patch(
         `https://carappdev.herokuapp.com/api/users/${file}`,
         {
-          isGarage: false
+          isGarage: false,
+          role: 'user'
         },
         {
           headers: {

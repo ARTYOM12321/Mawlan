@@ -26,3 +26,15 @@ exports.getAllfavs = catchAsync(async (req, res, next) => {
     data: doc
   });
 });
+
+exports.deleteCheck = catchAsync(async (req, res, next) => {
+  if (req.UserDetails.role === 'admin') next();
+  const doc = await favs.findById(req.params.id, 'userid');
+  if (!doc) next(new AppError('Nothing Found to Delete!', 403));
+
+  if (doc.userid.toString().localeCompare(req.UserDetails._id) === 0) {
+    next();
+  } else {
+    next(new AppError('You Dont Have Permission to do this Action!', 403));
+  }
+});

@@ -7,12 +7,10 @@ exports.deleteOne = Model =>
   catchAsync(async (req, res, next) => {
     const doc = await Model.findByIdAndDelete(req.params.id);
     if (!doc) {
-      return next(new AppError('ببورە هیچ پەڕەیەك نەدۆزرایەوە', 404));
+      return next(new AppError("Couldn't find any item to delete! ", 404));
     }
+
     let userHolder = '';
-    if (!res.locals.user) {
-      res.locals.user = 'No user';
-    }
     userHolder = { ...res.locals.user._doc };
 
     res.status(200).json({
@@ -24,8 +22,9 @@ exports.deleteOne = Model =>
 
 exports.UpdateOne = Model =>
   catchAsync(async (req, res, next) => {
-    if (req.body.PostOwner) req.body.PostOwner = null;
-
+    if (req.body.PostOwner) delete req.body.PostOwner;
+    if (req.body.GeragePassword) delete req.body.GeragePassword;
+    if (req.body.ownerUserId) delete req.body.ownerUserId;
     const doc = await Model.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
       runValidators: true
@@ -47,11 +46,8 @@ exports.UpdateOne = Model =>
       await user.save();
     }
 
-    //////////////////////
+    //////////////////////SENDING BACK USER//////////
     let userHolder = '';
-    if (!res.locals.user) {
-      res.locals.user = 'No user';
-    }
     userHolder = { ...res.locals.user._doc };
 
     res.status(200).json({
@@ -68,10 +64,8 @@ exports.CreateOne = Model =>
     const doc = await Model.create(req.body);
     const doc2 = await Model.findById(doc.id);
 
+    //SETTING UP THE USER
     let userHolder = '';
-    if (!res.locals.user) {
-      res.locals.user = 'No user';
-    }
     userHolder = { ...res.locals.user._doc };
 
     res.status(201).json({
@@ -95,9 +89,6 @@ exports.getOne = (Model, populateOptions) =>
     }
 
     let userHolder = '';
-    if (!res.locals.user) {
-      res.locals.user = 'No user';
-    }
     userHolder = { ...res.locals.user._doc };
 
     res.status(200).json({
@@ -110,7 +101,6 @@ exports.getOne = (Model, populateOptions) =>
 
 exports.getAll = Model =>
   catchAsync(async (req, res, next) => {
-    if (req.user.role !== 'admin') req.query.published = true;
     //to Allow for nested Get Reviews on
     let filter = {};
     if (req.params.tourId) filter = { _id: req.params.tourId };
@@ -125,10 +115,6 @@ exports.getAll = Model =>
     //200 === OK , we are sending a Json as Jsend
 
     let userHolder = '';
-    if (!res.locals.user) {
-      res.locals.user = 'No user';
-    }
-
     userHolder = { ...res.locals.user._doc };
     res.status(200).json({
       status: 'success',
