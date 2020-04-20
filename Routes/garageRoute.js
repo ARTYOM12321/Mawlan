@@ -31,6 +31,7 @@ Router.route('/:id')
   .patch(
     authController.protect,
     authController.restrictTo('admin', 'adminGarage'),
+    newController.CheckerDeleteUpdate,
     imageHandler.uploadImages,
     imageHandler.resizePhotos('Garage'),
     newController.UpdateCheker,
@@ -40,6 +41,7 @@ Router.route('/:id')
   .delete(
     authController.protect,
     authController.restrictTo('admin', 'adminGarage'),
+    newController.CheckerDeleteUpdate,
     newController.deleteChecker,
     newController.DeleteGarage
   );
