@@ -8,7 +8,8 @@ const favoriteSchema = new mongoose.Schema(
     },
     postid: {
       type: mongoose.Schema.ObjectId,
-      ref: 'cars'
+      ref: 'cars',
+      unique: true
     },
     createdAt: Date
   },

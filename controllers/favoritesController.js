@@ -1,5 +1,3 @@
-const bcrypt = require('bcryptjs');
-const axios = require('axios').default;
 const catchAsync = require('../utils/CatchAsync');
 const factory = require('./HandlerFactory');
 const favs = require('.//..//Models//favoritesModel');
@@ -28,7 +26,6 @@ exports.getAllfavs = catchAsync(async (req, res, next) => {
 });
 
 exports.deleteCheck = catchAsync(async (req, res, next) => {
-  if (req.UserDetails.role === 'admin') next();
   const doc = await favs.findById(req.params.id, 'userid');
   if (!doc) next(new AppError('Nothing Found to Delete!', 403));
 

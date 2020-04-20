@@ -79,7 +79,6 @@ exports.UpdateCheker = catchAsync(async (req, res, next) => {
 
   if (req.body.published == true || req.body.published == false) {
     if (req.UserDetails.role === 'admin') {
-      const headerr = `Bearer ${req.headers.authorization.split(' ')[1]}`;
       for (const file of EmailArray) {
         await User.findByIdAndUpdate(file, {
           isGarage: req.body.published
