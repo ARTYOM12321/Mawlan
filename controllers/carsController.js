@@ -8,17 +8,10 @@ const AppError = require('../utils/error');
 
 //----------------------------------------------------------------
 exports.test = catchAsync(async (req, res, next) => {
-  await axios
-    .post('http://carappdev.herokuapp.com/api/users/login', {
-      mawlan: 'user3442@microsoft.com',
-      alipassword: 'test12345'
-    })
-    .then(response => {
-      console.log(response);
-    })
-    .catch(err => {
-      console.log(err);
-    });
+  await axios.post('http://carappdev.herokuapp.com/api/users/login', {
+    mawlan: 'user3442@microsoft.com',
+    alipassword: 'test12345'
+  });
   res.status(200).json({
     'hello world': 'nothing'
   });
@@ -41,7 +34,7 @@ exports.Check = catchAsync(async (req, res, next) => {
     req.body.individual = false;
   }
 
-  if (req.UserDetails.isGarage === true && req.body.individual == false) {
+  if (req.UserDetails.isGarage === true && req.body.individual === false) {
     //looking for the garage in two queries
     let garagefound;
     garagefound = await garage.find({

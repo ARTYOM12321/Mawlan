@@ -16,6 +16,20 @@ exports.UpdateGarage = factory.UpdateOne(garage);
 exports.DeleteGarage = factory.deleteOne(garage);
 exports.SearchGarage = factory.PartialSearch(garage);
 
+exports.CheckerDeleteUpdate = catchAsync(async (req, res, next) => {
+  if (req.UserDetails.role !== 'admin') {
+    const garagefound = await garage.findById(req.params.id);
+    const user = req.UserDetails.id;
+    if (user.toString().localeCompare(garagefound.ownerUserId._id) === 0) {
+      next();
+    } else {
+      next(new AppError('You Dont Have Permission to do this Action!', 403));
+    }
+  } else {
+    next();
+  }
+});
+
 exports.getAllChecker = (req, res, next) => {
   if (req.user.role !== 'admin') req.query.published = true;
   next();
@@ -57,46 +71,25 @@ exports.UpdateCheker = catchAsync(async (req, res, next) => {
   users.forEach(el => {
     EmailArray.push(el._id);
   });
+  //sending it to next Middleware
   req.WorkerEmailsReq = [...EmailArray];
   EmailArray.push(garagefound[0].ownerUserId._id);
 
-  //sending it to next Middleware
-
-  //ONLY FOR ADMIN , CHANGING Published and IsGarage
+  //ONLY FOR ADMIN , CHANGING Published and IsGarage and adminGarage role
 
   if (req.body.published == true || req.body.published == false) {
     if (req.UserDetails.role === 'admin') {
       const headerr = `Bearer ${req.headers.authorization.split(' ')[1]}`;
       for (const file of EmailArray) {
-        await axios
-          .patch(
-            `https://carappdev.herokuapp.com/api/users/${file}`,
-            {
-              isGarage: req.body.published
-            },
-            {
-              headers: {
-                authorization: headerr
-              }
-            }
-          )
-          .then(Response => {})
-          .catch(err => {});
+        await User.findByIdAndUpdate(file, {
+          isGarage: req.body.published
+        });
       }
       let roleselected = req.body.published == true ? 'adminGarage' : 'user';
-      await axios
-        .patch(
-          `https://carappdev.herokuapp.com/api/users/${garagefound[0].ownerUserId._id}`,
-          {
-            role: roleselected
-          },
-          {
-            headers: {
-              authorization: headerr
-            }
-          }
-        )
-        .catch(err => {});
+
+      await User.findByIdAndUpdate(garagefound[0].ownerUserId._id, {
+        role: roleselected
+      });
     } else {
       delete req.body.published;
     }
@@ -155,44 +148,21 @@ exports.deleteChecker = catchAsync(async (req, res, next) => {
       available: false
     }
   );
-  console.log('UP HERE');
-  if (req.UserDetails.role !== 'admin') {
-    const garagefound = await garage.findOneAndUpdate(req.params.id, {
-      published: false
-    });
-    res.status(200).json({
-      status: 'success',
-      message:
-        'Garage in Unpublished : Please Wait for Admin Review To Delete it Completly'
-    });
-  } else {
-    console.log('Downhere');
+  //
+  //GRABBING Emails Again
+  const users = garagefound.worker;
+  const EmailArray = [];
+  users.forEach(el => {
+    EmailArray.push(el._id);
+  });
+  EmailArray.push(garagefound.ownerUserId._id);
+  //
 
-    const users = garagefound.worker;
-    1;
-    const EmailArray = [];
-    users.forEach(el => {
-      EmailArray.push(el._id);
+  for (const file of EmailArray) {
+    await User.findByIdAndUpdate(file, {
+      isGarage: false,
+      role: 'user'
     });
-    EmailArray.push(garagefound.ownerUserId._id);
-
-    for (const file of EmailArray) {
-      await axios
-        .patch(
-          `https://carappdev.herokuapp.com/api/users/${file}`,
-          {
-            isGarage: false,
-            role: 'user'
-          },
-          {
-            headers: {
-              authorization: `Bearer ${req.headers.authorization.split(' ')[1]}` // change it to Headers later
-            }
-          }
-        )
-        .then(Response => {})
-        .catch(err => {});
-    }
-    next();
   }
+  next();
 });
