@@ -46,10 +46,7 @@ const carsSchema = new mongoose.Schema(
     listOfImages: {
       type: Array
     },
-    location: {
-      latitude: String,
-      longitude: String
-    },
+    location: [String],
     PostOwner: {
       type: mongoose.Schema.ObjectId,
       ref: 'User',

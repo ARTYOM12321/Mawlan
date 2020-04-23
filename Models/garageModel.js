@@ -10,13 +10,7 @@ const garageSchema = new mongoose.Schema(
     listOfImages: {
       type: Array
     },
-    locations: [
-      {
-        coordinates: [Number],
-        address: String,
-        description: String
-      }
-    ],
+    location: [String],
     ownerUserId: {
       type: mongoose.Schema.ObjectId,
       ref: 'User',
