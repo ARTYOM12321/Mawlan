@@ -46,7 +46,7 @@ const carsSchema = new mongoose.Schema(
     listOfImages: {
       type: Array
     },
-    location: [String],
+    location: String,
     PostOwner: {
       type: mongoose.Schema.ObjectId,
       ref: 'User',
