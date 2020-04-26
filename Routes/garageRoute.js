@@ -10,8 +10,6 @@ const imageHandler = require('../controllers/imageHandler');
 
 Router.route('/l').get(authController.protect, newController.SearchGarage); //http://127.0.0.1:3000/garage/l?search=a
 
-/*    authController.protect,
-    authController.restrictTo('admin'),*/
 Router.route('/')
   .get(
     authController.protect,
