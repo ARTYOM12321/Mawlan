@@ -47,7 +47,7 @@ exports.login = catchAsync(async (req, res, next) => {
   //1) if email and pass exist
   if (!email || !password) {
     return next(
-      new AppError('please fill both Email and Password Fields :D', 400)
+      new AppError('Please fill both Email and Password Fields', 400)
     );
   }
   //2) check if user exist && password is correct (search within the database)
@@ -78,7 +78,7 @@ exports.protect = catchAsync(async (req, res, next) => {
     token = req.cookies.jwt;
   }
   if (!token) {
-    return next(new AppError('ئەم لینكە بەردەست نیە', 401));
+    return next(new AppError('Error occurred: you are not authenticated', 401));
   }
   //2) verfication the signtoken
   const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
@@ -145,9 +145,10 @@ exports.isLoggedIn = async (req, res, next) => {
 
 exports.restrictTo = (...roles) => {
   return (req, res, next) => {
-    //roles is an array ['admin','lead']; role now is user
     if (!roles.includes(req.user.role)) {
-      return next(new AppError('كارەكە سەركەوتوو نەبوو', 403));
+      return next(
+        new AppError("you don't have permission to do this Action", 403)
+      );
     }
     next();
   };

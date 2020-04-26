@@ -30,7 +30,7 @@ exports.UpdateOne = Model =>
       runValidators: true
     });
     if (!doc) {
-      return next(new AppError('ببورە هیچ پەرەیەك نەدۆزرایەوە', 404));
+      return next(new AppError('Error occurred: Try Again Later', 404));
     }
 
     //CHANGING PASSWORDS
@@ -39,7 +39,7 @@ exports.UpdateOne = Model =>
         .findById(req.params.id)
         .select('+GeragePassword');
       if (!user) {
-        return next(new AppError('There is no Gerage with that id ', 404));
+        return next(new AppError('There is no Gerage with that id', 404));
       }
       user.GeragePassword = req.body.GeragePasswordNew;
 
@@ -85,7 +85,7 @@ exports.getOne = (Model, populateOptions) =>
     const doc = await query;
 
     if (!doc) {
-      return next(new AppError('ببورە هیچ پەڕەیەك نەدۆزرایەوە', 404));
+      return next(new AppError('No item Found with that id', 404));
     }
 
     let userHolder = '';

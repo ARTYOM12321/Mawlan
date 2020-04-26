@@ -4,11 +4,13 @@ const favoriteSchema = new mongoose.Schema(
   {
     userid: {
       type: mongoose.Schema.ObjectId,
-      ref: 'User'
+      ref: 'User',
+      required: [true, 'there must be a user id ']
     },
     postid: {
       type: mongoose.Schema.ObjectId,
-      ref: 'cars'
+      ref: 'cars',
+      required: [true, 'there must be a car id']
     },
     createdAt: Date
   },

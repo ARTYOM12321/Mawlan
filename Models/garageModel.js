@@ -8,7 +8,8 @@ const garageSchema = new mongoose.Schema(
       required: [true, 'There must be a garage name']
     },
     listOfImages: {
-      type: Array
+      type: Array,
+      required: [true, 'there must be a garage Images']
     },
     location: String,
     ownerUserId: {
@@ -28,7 +29,7 @@ const garageSchema = new mongoose.Schema(
     },
     GeragePassword: {
       type: String,
-      maxlength: 6
+      minlength: 6
     },
     createdAt: Date
   },

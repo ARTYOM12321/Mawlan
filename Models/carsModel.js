@@ -4,11 +4,11 @@ const carsSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      required: [true, 'There must be a name']
+      required: [true, 'There must be a car name']
     },
     Price: {
       type: Number,
-      required: [true, 'There must be a Price']
+      required: [true, 'There must be a car Price']
     },
     carDescription: {
       type: String
@@ -26,13 +26,16 @@ const carsSchema = new mongoose.Schema(
       required: [true, 'there must be a company Name']
     },
     destance: {
-      type: Number
+      type: Number,
+      required: [true, 'there must be a car distance']
     },
     peston: {
-      type: Number
+      type: Number,
+      required: [true, 'there must be a car peston']
     },
     carType: {
-      type: String
+      type: String,
+      required: [true, 'there must be a car carType']
     },
     fuelType: {
       type: String
@@ -44,7 +47,8 @@ const carsSchema = new mongoose.Schema(
       type: String
     },
     listOfImages: {
-      type: Array
+      type: Array,
+      required: [true, 'there must be a car Images']
     },
     location: String,
     PostOwner: {
