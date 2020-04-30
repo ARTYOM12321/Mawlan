@@ -21,6 +21,7 @@ Router.route('/')
     imageHandler.uploadImages,
     imageHandler.resizePhotos('Garage'),
     newController.setUserEmail,
+    newController.EmailsChecker,
     newController.CreateGarage
   );
 
