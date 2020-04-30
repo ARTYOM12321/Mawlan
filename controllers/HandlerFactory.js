@@ -60,7 +60,6 @@ exports.UpdateOne = Model =>
 exports.CreateOne = Model =>
   catchAsync(async (req, res, next) => {
     if (!req.body.PostOwner) req.body.PostOwner = req.UserDetails._id;
-
     const doc = await Model.create(req.body);
     const doc2 = await Model.findById(doc.id);
 

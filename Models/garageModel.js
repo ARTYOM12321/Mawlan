@@ -14,13 +14,14 @@ const garageSchema = new mongoose.Schema(
     location: String,
     ownerUserId: {
       type: mongoose.Schema.ObjectId,
-      ref: 'User',
-      unique: true
+      ref: 'User'
     },
     worker: [
       {
         type: mongoose.Schema.ObjectId,
-        ref: 'User'
+        ref: 'User',
+        unique: true,
+        sparse: true
       }
     ],
     published: {
@@ -39,10 +40,14 @@ const garageSchema = new mongoose.Schema(
   }
 );
 garageSchema.index({ name: 1 });
+garageSchema.index({ worker: 1, ownerUserId: 1 }, { unique: true });
+garageSchema.index({ ownerUserId: 1 }, { unique: true });
+
 garageSchema.pre('save', async function(next) {
   this.GeragePassword = await bcrypt.hash(this.GeragePassword, 12);
   next();
 });
+
 /*
 garageSchema.pre(/^find/, function(next) {
   this.find({ published: { $ne: false } });

@@ -115,7 +115,11 @@ exports.UpdateWorker = catchAsync(async (req, res, next) => {
           new AppError('Provided email is not in the workers list', 403)
         );
       const indextodelete = req.WorkerEmailsReq.indexOf(userfound[0].id);
+
       req.WorkerEmailsReq.splice(indextodelete, 1);
+      await User.findByIdAndUpdate(userfound[0].id, {
+        indexChecker: false
+      });
       req.body.worker = [...req.WorkerEmailsReq];
     } else {
       //PREPARING FOR ADD
@@ -127,6 +131,9 @@ exports.UpdateWorker = catchAsync(async (req, res, next) => {
       if (req.WorkerEmailsReq.toString().includes(userfound[0].id))
         return next(new AppError('User exists, Cannot add it again', 403));
       req.WorkerEmailsReq.push(userfound[0].id);
+      await User.findByIdAndUpdate(userfound[0].id, {
+        indexChecker: true
+      });
       req.body.worker = [...req.WorkerEmailsReq];
     }
   }
@@ -160,7 +167,31 @@ exports.deleteChecker = catchAsync(async (req, res, next) => {
   for (const file of EmailArray) {
     await User.findByIdAndUpdate(file, {
       isGarage: false,
+      indexChecker: true,
       role: 'user'
+    });
+  }
+  next();
+});
+
+exports.EmailsChecker = catchAsync(async (req, res, next) => {
+  const emails = req.body.worker;
+  emails.push(req.body.ownerUserId);
+  for (const email of emails) {
+    let a = await User.findById(email, { indexChecker: 1 });
+    if (a.indexChecker == true) {
+      next(
+        new AppError(
+          `One of the workers or the Owner is found from Another Garage`,
+          403
+        )
+      );
+    }
+  }
+
+  for (const email of emails) {
+    await User.findByIdAndUpdate(email, {
+      indexChecker: true
     });
   }
   next();
