@@ -97,6 +97,7 @@ exports.protect = catchAsync(async (req, res, next) => {
     );
   }
   //grant access to protected routes
+  freshUser.indexChecker = undefined;
   req.user = freshUser;
   res.locals.user = freshUser;
   req.UserDetails = freshUser;
