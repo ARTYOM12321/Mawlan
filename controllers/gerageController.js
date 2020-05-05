@@ -167,7 +167,7 @@ exports.deleteChecker = catchAsync(async (req, res, next) => {
   for (const file of EmailArray) {
     await User.findByIdAndUpdate(file, {
       isGarage: false,
-      indexChecker: true,
+      indexChecker: false,
       role: 'user'
     });
   }
