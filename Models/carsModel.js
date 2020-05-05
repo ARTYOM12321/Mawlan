@@ -81,7 +81,7 @@ carsSchema.pre(/^find/, function(next) {
   this.populate({
     path: 'PostOwner',
     select:
-      '-__v -passwordChangedAt -PasswordResetToken -PasswordResetExpires -active -isGarage'
+      '-__v -passwordChangedAt -indexChecker -PasswordResetToken -PasswordResetExpires -active -isGarage'
   });
   next();
 });

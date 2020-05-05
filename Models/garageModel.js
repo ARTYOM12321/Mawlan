@@ -63,7 +63,7 @@ garageSchema.pre(/^find/, function(next) {
   this.populate({
     path: 'ownerUserId',
     select:
-      '-__v -passwordChangedAt -PasswordResetToken -PasswordResetExpires -active -isGarage'
+      '-__v -passwordChangedAt -indexChecker -PasswordResetToken -PasswordResetExpires -active -isGarage'
   });
   next();
 });
@@ -71,7 +71,7 @@ garageSchema.pre(/^find/, function(next) {
   this.populate({
     path: 'worker',
     select:
-      '-__v -passwordChangedAt -PasswordResetToken -PasswordResetExpires -active -isGarage'
+      '-__v -passwordChangedAt -indexChecker -PasswordResetToken -PasswordResetExpires -active -isGarage'
   });
   next();
 });
@@ -82,13 +82,5 @@ garageSchema.methods.garagechecker = async function(
 ) {
   return await bcrypt.compare(candidatePassword, userPassword);
 };
-/*
-garageSchema.pre('save', async function(next) {
-  if (!this.isModified('GeragePassword')) return next();
-
-  this.GeragePassword = await bcrypt.hash(this.GeragePassword, 12);
-  next();
-}); 
-*/
 const garage = mongoose.model('garage', garageSchema);
 module.exports = garage;
