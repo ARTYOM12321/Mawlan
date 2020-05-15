@@ -30,6 +30,7 @@ const userRouter = require('./Routes/userRoutes');
 const carsRouter = require('./Routes/carsRoute');
 const garageRouter = require('./Routes/garageRoute');
 const favoritesRouter = require('./Routes/favoritesRoute');
+const chatRouter = require('./Routes/chatRoute');
 
 app.use(
   express.json({
@@ -65,6 +66,7 @@ app.use('/api/users', userRouter);
 app.use('/api/cars', carsRouter);
 app.use('/api/garage', garageRouter);
 app.use('/api/favorites', favoritesRouter);
+app.use('/api/chat', chatRouter);
 
 //RENDERING THE PAGE
 app.use('/resetPassword/:token', function(req, res, next) {
