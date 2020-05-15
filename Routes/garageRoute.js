@@ -19,22 +19,26 @@ Router.route('/')
   .post(
     authController.protect,
     imageHandler.uploadImages,
-    imageHandler.resizePhotos('Garage'),
     newController.setUserEmail,
     newController.EmailsChecker,
+    imageHandler.resizePhotos('Garage'),
     newController.CreateGarage
   );
 
 Router.route('/:id')
-  .get(authController.protect, newController.getGarage)
+  .get(
+    authController.protect,
+    newController.getAllChecker,
+    newController.getGarage
+  )
   .patch(
     authController.protect,
     authController.restrictTo('admin', 'adminGarage'),
     newController.CheckerDeleteUpdate,
     imageHandler.uploadImages,
-    imageHandler.resizePhotos('Garage'),
     newController.UpdateCheker,
     newController.UpdateWorker,
+    imageHandler.resizePhotos('Garage'),
     newController.UpdateGarage
   )
   .delete(
