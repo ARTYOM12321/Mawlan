@@ -118,7 +118,8 @@ exports.UpdateWorker = catchAsync(async (req, res, next) => {
 
       req.WorkerEmailsReq.splice(indextodelete, 1);
       await User.findByIdAndUpdate(userfound[0].id, {
-        indexChecker: false
+        indexChecker: false,
+        isGarage: false
       });
       req.body.worker = [...req.WorkerEmailsReq];
     } else {
@@ -132,7 +133,8 @@ exports.UpdateWorker = catchAsync(async (req, res, next) => {
         return next(new AppError('User exists, Cannot add it again', 403));
       req.WorkerEmailsReq.push(userfound[0].id);
       await User.findByIdAndUpdate(userfound[0].id, {
-        indexChecker: true
+        indexChecker: true,
+        isGarage: true
       });
       req.body.worker = [...req.WorkerEmailsReq];
     }
@@ -191,6 +193,7 @@ exports.EmailsChecker = catchAsync(async (req, res, next) => {
 
   for (const email of emails) {
     await User.findByIdAndUpdate(email, {
+      isGarage: true,
       indexChecker: true
     });
   }
