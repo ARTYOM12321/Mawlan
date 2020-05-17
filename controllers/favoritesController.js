@@ -3,7 +3,7 @@ const factory = require('./HandlerFactory');
 const favs = require('.//..//Models//favoritesModel');
 const AppError = require('../utils/error');
 
-//exports.getAllfavs = factory.getAll(garage);
+exports.getAllfavs = factory.getAll(favs);
 exports.getfavs = factory.getOne(favs);
 exports.Createfavs = factory.CreateOne(favs);
 exports.Updatefavs = factory.UpdateOne(favs);
@@ -15,14 +15,9 @@ exports.setUserPostid = catchAsync(async (req, res, next) => {
   next();
 });
 
-exports.getAllfavs = catchAsync(async (req, res, next) => {
-  const doc = await favs.find({ userid: req.UserDetails._id });
-
-  res.status(200).json({
-    status: 'success',
-    result: doc.length,
-    data: doc
-  });
+exports.getAllfavsChecker = catchAsync(async (req, res, next) => {
+  req.query.userid = req.UserDetails._id;
+  next();
 });
 
 exports.deleteCheck = catchAsync(async (req, res, next) => {

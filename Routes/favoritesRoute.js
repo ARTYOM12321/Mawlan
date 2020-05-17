@@ -10,7 +10,11 @@ const authController = require('../controllers/aythController');
 /*    authController.protect,
     authController.restrictTo('admin'),*/
 Router.route('/')
-  .get(authController.protect, newController.getAllfavs)
+  .get(
+    authController.protect,
+    newController.getAllfavsChecker,
+    newController.getAllfavs
+  )
   .post(
     authController.protect,
     newController.setUserPostid,
