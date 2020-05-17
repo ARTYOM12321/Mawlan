@@ -2,7 +2,10 @@ const mongoose = require('mongoose');
 
 const chatHolderSchema = new mongoose.Schema(
   {
-    Sender: mongoose.Schema.ObjectId,
+    Sender: {
+      type: mongoose.Schema.ObjectId,
+      ref: 'User'
+    },
     Reciver: {
       type: mongoose.Schema.ObjectId,
       ref: 'User'
@@ -26,6 +29,13 @@ chatHolderSchema.index({ Sender: 1, Reciver: 1 });
 chatHolderSchema.pre(/^find/, function(next) {
   this.populate({
     path: 'Reciver',
+    select: 'name photo'
+  });
+  next();
+});
+chatHolderSchema.pre(/^find/, function(next) {
+  this.populate({
+    path: 'Sender',
     select: 'name photo'
   });
   next();

@@ -39,7 +39,7 @@ exports.ShowLatest = catchAsync(async (req, res, next) => {
       {
         $or: [{ Sender: req.UserDetails._id }, { Reciver: req.UserDetails._id }]
       },
-      { Sender: 1, Reciver: 1, lastDate: 1 }
+      { Sender: 1, Reciver: 1, lastDate: 1, channelId: 1 }
     )
     .sort([['lastDate', -1]])
     .limit(limit);

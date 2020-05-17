@@ -93,7 +93,7 @@ exports.updateMe = catchAsync(async (req, res, next) => {
 });
 
 exports.deleteMe = catchAsync(async (req, res, next) => {
-  await cars.deleteMany({ PostOwner: req.user.id, individual: true }); ///Deleting all personal Posts
+  await cars.deleteMany({ PostOwner: req.user.id }); ///Deleting all personal Posts
   await favs.deleteMany({ userid: req.user.id }); //Deleting All the Favs
 
   let garagefound;
@@ -102,6 +102,7 @@ exports.deleteMe = catchAsync(async (req, res, next) => {
   });
 
   if (garagefound.length !== 0) {
+    await cars.deleteMany({ garageId: garagefound[0]._id });
     await garage.findByIdAndUpdate(garagefound[0]._id, {
       published: false,
       worker: []
