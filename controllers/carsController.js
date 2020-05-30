@@ -5,15 +5,28 @@ const factory = require('./HandlerFactory');
 const cars = require('.//..//Models//carsModel');
 const garage = require('.//..//Models//garageModel');
 const AppError = require('../utils/error');
+const APIFeatures = require('./../utils/apiFeatures');
 
 //----------------------------------------------------------------
-exports.test = catchAsync(async (req, res, next) => {
-  await axios.post('http://carappdev.herokuapp.com/api/users/login', {
-    mawlan: 'user3442@microsoft.com',
-    alipassword: 'test12345'
-  });
+
+exports.timeQuery = catchAsync(async (req, res, next) => {
+  let filter = {};
+  if (!req.query.time)
+    return next(
+      new AppError('You Cant Use this Route without Providing Time!', 400)
+    );
+  filter.createdAt = { $gte: req.query.time };
+  if (req.query.carType) filter.carType = req.query.carType;
+
+  console.log(filter);
+  const doc = await cars.find(filter).sort([['createdAt', -1]]);
+
+  // const doc = await features.query.explain();
+
   res.status(200).json({
-    'hello world': 'nothing'
+    status: 'success',
+    length: doc.length,
+    user: doc
   });
 });
 //----------------------------------------------------------------

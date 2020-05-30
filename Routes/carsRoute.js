@@ -10,6 +10,7 @@ const imageHandler = require('../controllers/imageHandler');
 const authController = require('../controllers/aythController');
 
 Router.route('/l').get(authController.protect, newController.SearchMovies); //http://127.0.0.1:3000/cars/l?search=a
+Router.route('/new').get(authController.protect, newController.timeQuery); //http://127.0.0.1:3000/cars/l?time=a
 
 /*   authController.restrictTo('admin'), */
 Router.route('/')
