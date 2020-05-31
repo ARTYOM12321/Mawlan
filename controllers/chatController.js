@@ -13,7 +13,7 @@ exports.Createchat = factory.CreateOne(chat);
 exports.getAllchats = catchAsync(async (req, res, next) => {
   let limit = 10;
 
-  if (req.query.limit) limit = req.query.limit;
+  if (req.body.limit) limit = req.body.limit;
   const doc = await chat
     .find({
       $or: [

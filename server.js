@@ -59,7 +59,8 @@ io.on('connection', socket => {
   //
   socket.on('send-chat-message', data => {
     socket.to(data.room).broadcast.emit('chat-message', {
-      message: data.message
+      message: data.message,
+      user: data.user
     });
   });
 });

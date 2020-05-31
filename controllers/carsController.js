@@ -15,7 +15,7 @@ exports.timeQuery = catchAsync(async (req, res, next) => {
     return next(
       new AppError('You Cant Use this Route without Providing Time!', 400)
     );
-  filter.createdAt = { $gte: req.query.time };
+  filter.createdAt = { $gt: req.query.time };
   if (req.query.carType) filter.carType = req.query.carType;
 
   console.log(filter);
